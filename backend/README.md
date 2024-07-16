@@ -1,21 +1,37 @@
 
 API Invoke URL
 	dev: https://p6pfqhi6ok.execute-api.us-east-1.amazonaws.com
+	
+Lambdas
+	[todos-getTodo-dev](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/todos-getTodo-dev)
+	[todos-createTodo-dev](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/todos-createTodo-dev)
+	[todos-updateTodo-dev](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/todos-updateTodo-dev)
+	[todos-deleteTodo-dev](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/todos-deleteTodo-dev)
+	[todos-getAllTodos-dev](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/todos-getAllTodos-dev)
 
 
+to deploy
+	```sls deploy```
 
-<!--
-title: 'AWS NodeJS Example'
-description: 'This template demonstrates how to deploy a NodeJS function running on AWS Lambda using the traditional Serverless Framework.'
-layout: Doc
-framework: v3
-platform: AWS
-language: nodeJS
-priority: 1
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
+to deploy just 1 function
+	```sls deploy -f getTodo```
+
+
+# Curl Commands
+
+## Get Todo
+```
+curl  -X GET \
+  'https://p6pfqhi6ok.execute-api.us-east-1.amazonaws.com/todos/5e1d2b47-d809-4d4e-9995-0db328467543' \
+  --header 'Accept: */*' \
+```
+```
+{
+  "id": "5e1d2b47-d809-4d4e-9995-0db328467543",
+  "done": false,
+  "title": "title"
+}
+```
 
 
 # Serverless Framework AWS NodeJS Example
@@ -34,16 +50,6 @@ In order to deploy the example, you need to run the following command:
 $ serverless deploy
 ```
 
-After running deploy, you should see output similar to:
-
-```bash
-Deploying aws-node-project to stage dev (us-east-1)
-
-✔ Service deployed to stack aws-node-project-dev (112s)
-
-functions:
-  sendEmail: aws-node-project-dev-send-email (1.5 kB)
-```
 
 ### Invocation
 

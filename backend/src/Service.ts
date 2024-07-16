@@ -1,74 +1,84 @@
-import { DynamoDBClient, GetItemCommand, PutItemCommand, DeleteItemCommand, ScanCommand, UpdateItemCommand, UpdateItemCommandOutput, ReturnValue } from "@aws-sdk/client-dynamodb";
-import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand , DeleteCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { uuid } from 'uuidv4';
-import { Todo, newTodo } from "./Todo";
+import { Todo} from "./Todo";
 
 
-const db = new DynamoDBClient({});
-const tableName:string|undefined = process.env.TODOS_TABLE_NAME;
+const client = new DynamoDBClient({});
+const docClient = DynamoDBDocumentClient.from(client);
+const tableName: string|undefined = process.env.TODOS_TABLE_NAME;
 
 
 export class Service{
 	
-	async getTodo(id:string) : Promise<Todo> {
+	async getTodo(id:string): Promise<Todo> {
 		
-		const params = {
-            TableName: tableName,
-            Key: marshall({ id: id }),
-        };
-        let { Item } = await db.send(new GetItemCommand(params));
+		const getCommand = new GetCommand({
+			TableName: tableName,
+			Key: {
+				id: id,
+			}
+		});
 		
-		if( !Item ){
-			throw new Error("failed to get stuff from DB");
+		const response = await docClient.send( getCommand );
+		console.log(response);
+		
+		if( !response.Item ){
+			throw new Error();
 		}
 		
-		const unmarshalledItem = unmarshall(Item);
-		
-		const todo:Todo = newTodo(unmarshalledItem);
+		const todo:Todo = response.Item as Todo;
 		return todo;
 		
 	}
-	async createTodo( todo:Todo ) : Promise<Todo> {
-		
-		console.log("service.createTodo. " + "tableName: " + tableName);
+	async createTodo( todo:Todo ) {
 		
 		todo.id = uuid();
 		
-		const params = {
-            TableName: tableName,
-            Item: marshall(todo || {}),
-        };
+		const putCommand = new PutCommand({
+			TableName: tableName,
+			Item: todo,
+		});
 		
-		await db.send(new PutItemCommand(params));
+		await docClient.send( putCommand );
 		
 		return todo;
 		
 	}
 	async updateTodo( id:string , title: string ){
 		
-		const params = {
-            TableName: tableName,
-            Key: marshall({ id: id }),
-			UpdateExpression: 'set title = :title',
-			ExpressionAttributeValues: {
-				':title': marshall(title),
+		const updateCommand = new UpdateCommand({
+			TableName: tableName,
+			Key: { 
+				id: id
 			},
-			ReturnValues: ReturnValue.ALL_NEW,
-        };
-        const result:UpdateItemCommandOutput = await db.send(new UpdateItemCommand(params));
-		console.log({result})
-		return result;
+			UpdateExpression: "SET title = :title",
+			ExpressionAttributeValues: {
+				":title": title,
+			},
+			ReturnValues: "ALL_NEW",
+		});
+		
+		
+		const response = await docClient.send( updateCommand );
+		console.log( response );
+		
+		const updatedTodo:Todo = response.Attributes as Todo;
+		return updatedTodo;
 		
 	}
-	async deleteTodo( id:string ): Promise<Todo>{
+	async deleteTodo( id:string ) {
 		
 		const todo:Todo = await this.getTodo(id);
 		
-		const params = {
-            TableName: tableName,
-            Key: marshall({ id: id }),
-        };
-        await db.send(new DeleteItemCommand(params));
+		const deletedCommand = new DeleteCommand({
+			TableName: tableName,
+			Key: {
+				id: id,
+			},
+		});
+		
+		await docClient.send( deletedCommand );
 		
 		return todo;
 		
@@ -77,22 +87,26 @@ export class Service{
 	
 	async getAllTodos() : Promise<Todo[]> {
 		
-		const params = {
-            TableName: tableName,
-        };
-		const { Items } = await db.send(new ScanCommand(params));
+		const scanCommand = new ScanCommand({
+			TableName: tableName,
+		});
 		
+		const response = await client.send( scanCommand );
+		console.log(response);
 		
-		if( !Items ){
+		if( !response.Items ){
 			throw new Error("failed to get stuff from DB");
 		}
 		
 		
-		const todos:Todo[] = Items
-			.map( item => unmarshall(item) )
-			.map( unmarshalledItem => newTodo(unmarshalledItem) );
+		// const todos:Todo[] = response.Items
+		// 	.map( item => { 
+		// 		return item as Todo 
+		// 	});
 		
+		const todos:Todo[] = response.Items as Todo[];
 		return todos;
+		
 	}
 	
 	

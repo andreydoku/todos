@@ -1,5 +1,5 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-//import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+
 import { Todo, newTodo } from "./Todo";
 
 import { Service } from "./Service";
@@ -17,7 +17,7 @@ export const getTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
-				message: "ID path parameter required",
+				message: "ID path parameter required"
 			})
 		};
 	}
@@ -68,7 +68,7 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
-				message: "Request body is missing first name"
+				message: "Request body is missing the title"
 			})
 		};
 	}
@@ -76,7 +76,7 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	
 	try {
 		
-		const createdTodo:Todo = await service.createTodo(todo);
+		const createdTodo = await service.createTodo(todo);
 		
 		return {
 			statusCode: 200,
@@ -181,7 +181,7 @@ export const deleteTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	
 	try {
 		
-		const deletedTodo:Todo = await service.deleteTodo(id);
+		const deletedTodo = await service.deleteTodo(id);
 		
 		return {
 			statusCode: 200,
