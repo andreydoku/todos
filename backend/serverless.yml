@@ -1,0 +1,106 @@
+service: todos
+frameworkVersion: "3"
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-plugin-include-dependencies
+  - serverless-plugin-common-excludes
+
+package:
+  excludeDevDependencies: false
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}
+  environment:
+    TODOS_TABLE_NAME: ${self:custom.todosTableName}
+  profile: default
+  region: us-east-1
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:GetItem"
+            - "dynamodb:PutItem"
+            - "dynamodb:UpdateItem"
+            - "dynamodb:Scan"
+            - "dynamodb:DeleteItem"
+          Resource: "*"
+  httpApi:
+    metrics: true
+    cors:
+      allowedOrigins:
+        - http://localhost:5173
+      allowedHeaders:
+        - "*"
+      allowedMethods:
+        - POST
+      maxAge: 20
+
+custom:
+  todosTableName: ${self:service}-todosTable-${self:provider.stage}
+
+functions:
+  getTodo:
+    handler: src/Controller.getTodo
+    name: ${self:service}-getTodo-${self:provider.stage}
+    timeout: 5
+    memorySize: 128
+    events:
+      - httpApi:
+          path: /todos/{id}
+          method: GET
+  createTodo:
+    handler: src/Controller.createTodo
+    name: ${self:service}-createTodo-${self:provider.stage}
+    timeout: 5
+    memorySize: 128
+    events:
+      - httpApi:
+          path: /todos
+          method: POST
+  updateTodo:
+    handler: src/Controller.updateTodo
+    name: ${self:service}-updateTodo-${self:provider.stage}
+    timeout: 5
+    memorySize: 128
+    events:
+      - httpApi:
+          path: /todos/{id}
+          method: POST
+  deleteTodo:
+    handler: src/Controller.deleteTodo
+    name: ${self:service}-deleteTodo-${self:provider.stage}
+    timeout: 5
+    memorySize: 128
+    events:
+      - httpApi:
+          path: /todos/{id}
+          method: DELETE
+  getAllTodos:
+    handler: src/Controller.getAllTodos
+    name: ${self:service}-getAllTodos-${self:provider.stage}
+    timeout: 5
+    memorySize: 128
+    events:
+      - httpApi:
+          path: /todos
+          method: GET
+
+resources:
+  Resources:
+    TodosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.todosTableName}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
