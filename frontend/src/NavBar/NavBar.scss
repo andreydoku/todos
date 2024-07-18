@@ -1,0 +1,41 @@
+.nav-bar{
+	
+	//background-color:  var(--theme-green);
+	background-color:  rgb(247,247,247);
+	box-shadow: 3px 3px 5px rgba(0,0,0 , 0.2);
+	overflow: hidden;
+	height: 100%;
+	//width: 300px;
+	z-index: 100;
+	
+	
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 20px;
+	padding: 40px;
+	
+	.nav-link{
+		color: #242424;
+		text-decoration: none;
+		font-size: 20px;
+		
+		&:hover{
+			border-bottom-color: var(--theme-green);
+			//border-bottom-color: rgb(from var(--theme-green) r g b / 50%);
+			// border-bottom-color: rgba( var(--theme-green) , 0.5 );
+			//color: var(--theme-green);
+		}
+		
+		&.active{
+			//text-decoration: underline;
+			border-bottom-color: var(--theme-green);
+		}
+		
+		
+	}
+	
+	
+	
+}
+
