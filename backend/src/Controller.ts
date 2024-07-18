@@ -126,21 +126,12 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	}
 	
 	const requestBody = JSON.parse(event.body);
-	if( !requestBody.done ){
-		return {
-			statusCode: 400,
-			body: JSON.stringify({
-				message: "done required in the body",
-			})
-		};
-	}
 	
-	const newDone:boolean = requestBody.done;//what happens if the type is string or something?
 	
 	
 	try {
 		
-		const result = await service.updateTodo(id, newDone);
+		const result = await service.updateTodo(id, requestBody);
 		
 		return {
 			statusCode: 200,

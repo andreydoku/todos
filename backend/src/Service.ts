@@ -1,4 +1,4 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { AttributeValue, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand , DeleteCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { uuid } from 'uuidv4';
 import { Todo} from "./Todo";
@@ -11,7 +11,7 @@ const tableName: string|undefined = process.env.TODOS_TABLE_NAME;
 
 export class Service{
 	
-	async getTodo(id:string): Promise<Todo> {
+	async getTodo( id:string ): Promise<Todo> {
 		
 		const getCommand = new GetCommand({
 			TableName: tableName,
@@ -45,20 +45,20 @@ export class Service{
 		return todo;
 		
 	}
-	async updateTodo( id:string , done: boolean ){
+	async updateTodo( id:string , requestBody:any ){
+		
+		//validate fields and types?
+		//create a TodoUpdateRequest type 
+		// - has all the same fields as Todo, but all of them are optional
+		// - try to cast the requestBody into that type, and if it fails, then throw a 400?
 		
 		const updateCommand = new UpdateCommand({
 			TableName: tableName,
-			Key: { 
-				id: id
-			},
-			UpdateExpression: "SET done = :done",
-			ExpressionAttributeValues: {
-				":done": done,
-			},
+			Key: { id: id },
+			UpdateExpression: this.getUpdateExpression( requestBody ),
+			ExpressionAttributeValues: this.getExpressionAttributeValues( requestBody ),
 			ReturnValues: "ALL_NEW",
 		});
-		
 		
 		const response = await docClient.send( updateCommand );
 		console.log( response );
@@ -67,6 +67,78 @@ export class Service{
 		return updatedTodo;
 		
 	}
+	
+	
+	getUpdateExpression( object:Object ): string{
+		
+		/*
+			need to turn this:
+				{
+					name: "Andrey",
+					address: "123 Street Drive"
+				}
+			
+			into this:
+				SET name = :name, address = :address
+			
+			
+		*/
+		
+		const updateExpressions:string[] = [];
+		
+		let fieldName: keyof typeof object;
+		for ( fieldName in object )
+		{
+			//const fieldValue = object[fieldName];
+			
+			//example of one expression: 
+			//	address = :address
+			
+			const updateExpression = fieldName + " = " + ":" + fieldName;
+			updateExpressions.push( updateExpression );
+		}
+		
+		const updateExpression:string = "SET " + updateExpressions.join(", ");
+		return updateExpression;
+		
+	}
+
+	getExpressionAttributeValues( object:Object ): object{
+		
+		/*
+			need to turn this:
+				{
+					name: "Andrey",
+					address: "123 Street Drive"
+				}
+			
+			into this:
+				{
+					":name" : "Andrey",
+					":address " : "123 Street Drive" ,
+				}
+			
+			
+		*/
+		
+		const expressionAttributeValues: Record<string,any> = {};
+		//const expressionAttributeValues: {[k: string]: any} = {};
+		
+		let fieldName: keyof typeof object;
+		for ( fieldName in object )
+		{
+			const fieldValue = object[fieldName];
+			
+			
+			const key = ":" + fieldName;
+			expressionAttributeValues[key] = fieldValue;
+			
+		}
+		
+		return expressionAttributeValues;
+		
+	}
+	
 	async deleteTodo( id:string ) {
 		
 		const todo:Todo = await this.getTodo(id);
