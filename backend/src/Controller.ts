@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-import { Todo, newTodo } from "./Todo";
+import { Todo } from "./Todo";
 
 import { Service } from "./Service";
 
@@ -62,7 +62,7 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	}
 	
 	const requestBody = JSON.parse(event.body);
-	const todo:Todo = newTodo(requestBody);
+	const todo:Todo = requestBody as Todo;
 	
 	if( !todo.title ){
 		return {
@@ -126,19 +126,21 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	}
 	
 	const requestBody = JSON.parse(event.body);
-	if( !requestBody.title || requestBody.title=="" ){
+	if( !requestBody.done ){
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
-				message: "title required in the body",
+				message: "done required in the body",
 			})
 		};
 	}
 	
-	const newTitle = requestBody.title;
+	const newDone:boolean = requestBody.done;//what happens if the type is string or something?
+	
+	
 	try {
 		
-		const result = await service.updateTodo(id, newTitle);
+		const result = await service.updateTodo(id, newDone);
 		
 		return {
 			statusCode: 200,

@@ -45,16 +45,16 @@ export class Service{
 		return todo;
 		
 	}
-	async updateTodo( id:string , title: string ){
+	async updateTodo( id:string , done: boolean ){
 		
 		const updateCommand = new UpdateCommand({
 			TableName: tableName,
 			Key: { 
 				id: id
 			},
-			UpdateExpression: "SET title = :title",
+			UpdateExpression: "SET done = :done",
 			ExpressionAttributeValues: {
-				":title": title,
+				":done": done,
 			},
 			ReturnValues: "ALL_NEW",
 		});
