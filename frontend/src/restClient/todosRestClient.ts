@@ -12,7 +12,8 @@ export class TodosRestClient {
 
 		try {
 			const response = await fetch(url, {
-				method: "GET"
+				method: "GET",
+				mode: "cors",
 			});
 
 			if (!response.ok) {
