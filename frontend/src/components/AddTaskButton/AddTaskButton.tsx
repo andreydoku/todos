@@ -1,6 +1,9 @@
 import './AddTaskButton.css';
 
-function AddTaskButton({ onClick }){
+type AddTaskButtonProps = {
+	onClick: () => void
+}
+function AddTaskButton({ onClick }: AddTaskButtonProps){
 	
 	if( onClick === undefined ) onClick = () => {};
 	

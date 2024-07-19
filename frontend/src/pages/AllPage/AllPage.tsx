@@ -48,7 +48,7 @@ export default function AllPage() {
 		
 	}
 	
-	async function titleChanged( id, newTitle ){
+	async function titleChanged( id:string , newTitle:string ){
 		
 		console.log( "title changed: " 
 			+ "\n\t" + "new title: " + newTitle 
@@ -67,7 +67,7 @@ export default function AllPage() {
 		
 	}
 	
-	async function deleteClicked( id ){
+	async function deleteClicked( id:string ){
 		
 		console.log( "delete clicked: " 
 			+ "\n\t" + "id: " + id

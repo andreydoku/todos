@@ -7,9 +7,9 @@ import { Todo } from '../../models/Todo';
 
 type TodoItemProps = {
 	todo: Todo
-	checkboxClicked: ( id:string|null|undefined , newChecked:boolean ) => void
-	titleChanged: ( id:string|null|undefined , newTitle:string ) => void
-	deleteClicked: ( id:string|null|undefined ) => void
+	checkboxClicked: ( id:string , newChecked:boolean ) => void
+	titleChanged: ( id:string , newTitle:string ) => void
+	deleteClicked: ( id:string ) => void
 }
 function TodoItem({ todo , checkboxClicked , titleChanged , deleteClicked }: TodoItemProps){
 	
