@@ -1,0 +1,22 @@
+#this is just a backup.  The real thing is on:
+#   AWS Console > Amplify > todos app > Hosting > Build settings
+
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - "cd frontend"
+        - "npm i"
+    build:
+      commands:
+        - "npm run build"
+  artifacts:
+    baseDirectory: frontend/dist
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - frontend/node_modules/**/*
+  buildPath: /
+appRoot: frontend
