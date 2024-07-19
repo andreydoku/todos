@@ -16,7 +16,7 @@ provider:
   environment:
     TODOS_TABLE_NAME: ${self:custom.todosTableName}
   profile: default
-  region: us-east-1
+  region: us-east-2
   iam:
     role:
       statements:
@@ -33,10 +33,13 @@ provider:
     cors:
       allowedOrigins:
         - http://localhost:5173
+        - https://dev.db455rbvk2t2a.amplifyapp.com/
       allowedHeaders:
         - "*"
       allowedMethods:
+        - GET
         - POST
+        - DELETE
       maxAge: 20
 
 custom:

@@ -1,6 +1,6 @@
 
 API Invoke URL
-	dev: https://p6pfqhi6ok.execute-api.us-east-1.amazonaws.com
+	dev: https://keiy978fn5.execute-api.us-east-2.amazonaws.com
 	
 Lambdas
 	[todos-getTodo-dev](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/todos-getTodo-dev)
@@ -22,7 +22,7 @@ to deploy just 1 function
 ## Get Todo
 ```
 curl  -X GET \
-  'https://p6pfqhi6ok.execute-api.us-east-1.amazonaws.com/todos/5e1d2b47-d809-4d4e-9995-0db328467543' \
+  'https://keiy978fn5.execute-api.us-east-2.amazonaws.com/todos/5e1d2b47-d809-4d4e-9995-0db328467543' \
   --header 'Accept: */*' \
 ```
 ```

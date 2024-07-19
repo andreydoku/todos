@@ -1,6 +1,6 @@
 import { Todo } from "../models/Todo";
 
-const hostUrl = "https://p6pfqhi6ok.execute-api.us-east-1.amazonaws.com";
+const hostUrl = "https://keiy978fn5.execute-api.us-east-2.amazonaws.com";
 
 
 
