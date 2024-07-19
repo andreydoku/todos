@@ -3,6 +3,8 @@ import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } f
 import { Todo } from "./Todo";
 
 import { Service } from "./Service";
+import { log } from 'console';
+import { isTodoUpdateRequest, TodoUpdateRequest } from './TodoUpdateRequest';
 
 
 const service:Service = new Service();
@@ -125,13 +127,23 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		};
 	}
 	
-	const requestBody = JSON.parse(event.body);
+	const requestBody = JSON.parse(event.body) ;
+	if( !isTodoUpdateRequest(requestBody) ){
+		return {
+			statusCode: 400,
+			body: JSON.stringify({
+				message: "Request body invalid",
+			})
+		};
+	}
+	
+	const todoUpdateRequest:TodoUpdateRequest = requestBody as TodoUpdateRequest;
 	
 	
 	
 	try {
 		
-		const result = await service.updateTodo(id, requestBody);
+		const result = await service.updateTodo(id, todoUpdateRequest);
 		
 		return {
 			statusCode: 200,
