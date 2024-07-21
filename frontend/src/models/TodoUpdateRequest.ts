@@ -8,7 +8,7 @@ export type TodoUpdateRequest = {
 
 export function isTodoUpdateRequest(object:any){
 	
-	
+	//TODO - check for required fields
 	
 	const isObject = (typeof object === 'object' && !Array.isArray(object) && object !== null);
 	if( !isObject ){

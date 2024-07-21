@@ -139,6 +139,14 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	
 	const todoUpdateRequest:TodoUpdateRequest = requestBody as TodoUpdateRequest;
 	
+	if( todoUpdateRequest.title == "" ){
+		return {
+			statusCode: 400,
+			body: JSON.stringify({
+				message: "title cannot be blank",
+			})
+		};
+	}
 	
 	
 	try {

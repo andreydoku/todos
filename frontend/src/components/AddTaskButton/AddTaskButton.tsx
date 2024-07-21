@@ -1,4 +1,4 @@
-import './AddTaskButton.css';
+import './AddTaskButton.scss';
 
 type AddTaskButtonProps = {
 	onClick: () => void

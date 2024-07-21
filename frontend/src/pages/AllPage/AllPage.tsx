@@ -4,6 +4,9 @@ import TodoList from "../../components/TodoList/TodoList";
 import "./AllPage.scss";
 import { Todo } from "../../models/Todo";
 import { TodosRestClient } from "../../restClient/todosRestClient";
+import { TodoUpdateRequest } from "../../models/TodoUpdateRequest";
+import { log } from "console";
+import AddTaskButton from "../../components/AddTaskButton/AddTaskButton";
 
 
 
@@ -30,21 +33,20 @@ export default function AllPage() {
 		setTodos( fetchedTodos );
 	};
 	
-	
-	const checkboxClicked = async ( id:string , checked:boolean ) => {
+	const updateTodo = async ( id:string , todoUpdateRequest:TodoUpdateRequest ) => {
 		
-		//const updatedTodo = await todoClient.updateTodo( id , {isDone: checked} );
-		const updatedTodo = todos.find( todo => todo.id == id );
-		if( updatedTodo == undefined){
-			return;
-		}
-		updatedTodo.done = checked;
+		const updatedTodo = await todosRestClient.updateTodo( id , todoUpdateRequest );
 		
 		const index = todos.findIndex( todo => todo.id === id );
-		
 		const newTodos = [...todos];
 		newTodos[index] = updatedTodo;
   		setTodos(newTodos);
+		
+	}
+	
+	const checkboxClicked = async ( id:string , checked:boolean ) => {
+		
+		updateTodo( id , { done: checked } );
 		
 	}
 	
@@ -55,15 +57,8 @@ export default function AllPage() {
 			+ "\n\t" + "id: " + id 
 		);
 		
-		// var updatedTodo = await todoApi.updateTodo( id , {title: newTitle} );
-		
-		// const index = todos.findIndex( todo => todo._id === id );
-		
-		// const newTodos = [...todos];
-		// newTodos[index] = updatedTodo;
-		
-		// console.log( newTodos );
-  		// setTodos(newTodos);
+		//handle 400 errors? like if title is empty?
+		updateTodo( id , { title: newTitle } );
 		
 	}
 	
@@ -73,16 +68,37 @@ export default function AllPage() {
 			+ "\n\t" + "id: " + id
 		);
 		
-		// const deletedTodo = await todoApi.deleteTodo( id );
+		const deletedTodo = await todosRestClient.deleteTodo( id );
 		
-		// const newTodos = todos.filter( todo => todo._id !== deletedTodo._id );
-  		// setTodos(newTodos);
+		const newTodos = todos.filter( todo => todo.id !== deletedTodo.id );
+  		setTodos(newTodos);
+		
+	}
+	
+	async function addTaskClicked(){
+		
+		console.log( "add task clicked" );
+		
+		const newTodo = {
+			title: "new task",
+			done: false
+		} as Todo;
+		
+		const addedTodo = await todosRestClient.addTodo( newTodo );
+		console.log( addedTodo );
+		
+		const newTodos = [...todos];
+		newTodos.push( addedTodo );
+		
+		setTodos( newTodos );
 		
 	}
 	
 	return (
 		<div className="all-page">
 			<h1>{title}</h1>
+			
+			<AddTaskButton onClick={() => addTaskClicked()}/>
 			
 			<TodoList 
 				todos={todos} 
