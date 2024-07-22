@@ -1,38 +1,51 @@
 import { DndContext } from "@dnd-kit/core";
 import "./DragAndDropDemoPage.scss";
-import NameList from "./NameList/NameList";
+import UserList from "./UserList/UserList";
 import { useState } from "react";
+import { User } from "./User";
 
 
 export default function DragAndDropDemoPage() {
 	
 	const title = "Drag and Drop Demo";
 	
-	const [names1, setNames1] = useState<string[]>(["Andrey" , "Eric" , "David" , "Chris"]);
-	const [names2, setNames2] = useState<string[]>([]);
+	const [activeUserId, setActiveUserId] = useState<null | string>(null);
+	
+	
+	const ALL_USERS: User[] = [
+		{ id: 1, name: "Andrey" },
+		{ id: 2, name: "Eric" },
+		{ id: 3, name: "David" },
+		{ id: 4, name: "Chris" },
+	]
+	
+	const [users1, setUsers1] = useState<User[]>( ALL_USERS );
+	const [users2, setUsers2] = useState<User[]>([]);
 	
 	
 	function handleDragEnd(event) {
 		if (event.over) {
-			const itemId = event.active.id
+			//const itemId = event.active.id
+			const user = event.active.data.current as User;
+			
 			const listId = event.over.id;
 			console.log({event})
-			console.log( itemId + " was dropped on " + listId );
+			console.log( user.name + " was dropped on " + listId );
 			
 			if( listId == "List 1" ){
-				if( !names1.includes(itemId) && names2.includes(itemId) ){
-					names1.push( itemId );
-					const newNames2 = names2.filter( name => name != itemId );
-					setNames1( names1 );
-					setNames2( newNames2 );
+				if( !users1.includes(user) && users2.includes(user) ){
+					users1.push( user );
+					const newUsers2 = users2.filter( name => name != user );
+					setUsers1( users1 );
+					setUsers2( newUsers2 );
 				}
 			}
 			if( listId == "List 2" ){
-				if( names1.includes(itemId) && !names2.includes(itemId) ){
-					const newNames1 = names1.filter( name => name != itemId );
-					names2.push( itemId );
-					setNames1( newNames1 );
-					setNames2( names2 );
+				if( users1.includes(user) && !users2.includes(user) ){
+					const newUsers1 = users1.filter( name => name != user );
+					users2.push( user );
+					setUsers1( newUsers1 );
+					setUsers2( users2 );
 				}
 			}
 			
@@ -45,8 +58,8 @@ export default function DragAndDropDemoPage() {
 			
 			<div className="two-lists">
 				<DndContext onDragEnd={handleDragEnd}>
-					<NameList title="List 1" names={names1} />
-					<NameList title="List 2" names={names2} />
+					<UserList title="List 1" users={users1} />
+					<UserList title="List 2" users={users2} />
 				</DndContext>
 			</div>
 			
