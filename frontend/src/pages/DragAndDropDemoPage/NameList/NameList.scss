@@ -1,0 +1,25 @@
+.name-list{
+	
+	border-radius: 5px;
+	//overflow: hidden;
+	
+	.title{
+		color: #434343;
+		height: 50px;
+		font-size: 18px;
+		
+		display: flex;
+		padding: 5px 20px;
+		padding-right: 8px;
+		align-items: center;
+		justify-content: space-between;
+		background-color: #c3e7ff;
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+	}
+	.names-area{
+		min-height: 300px;
+		background-color: rgb(219 219 219);
+	}
+}

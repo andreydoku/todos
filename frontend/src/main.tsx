@@ -13,6 +13,7 @@ import ErrorPage from './pages/ErrorPage/ErrorPage';
 
 
 import './index.scss';
+import DragAndDropDemoPage from './pages/DragAndDropDemoPage/DragAndDropDemoPage';
 
 
 
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 					<Route path="/" element={<Navigate replace to='/all' />} />
 					<Route path="/all" element={<AllPage />} />
 					<Route path="/today" element={<AboutPage />} />
+					<Route path="/demo" element={<DragAndDropDemoPage />} />
 					
 					<Route path="*" element={<ErrorPage />} />
 				</Routes>
