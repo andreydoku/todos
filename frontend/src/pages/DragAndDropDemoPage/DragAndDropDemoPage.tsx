@@ -1,10 +1,11 @@
-import { defaultDropAnimation, DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, DropAnimation } from "@dnd-kit/core";
+import { closestCorners, defaultDropAnimation, DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, DropAnimation, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import "./DragAndDropDemoPage.scss";
 import UserList from "./UserList/UserList";
 import { useState } from "react";
 import { User } from "./User";
 import UserItem from "./UserItem/UserItem";
 import { log } from "console";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 
 export default function DragAndDropDemoPage() {
@@ -15,14 +16,14 @@ export default function DragAndDropDemoPage() {
 	
 	
 	const INITIAL_USERS_1: User[] = [
-		{ id: "1", name: "Andrey" },
-		{ id: "2", name: "Eric" },
-		{ id: "3", name: "David" },
+		{ id: "user-1", name: "Andrey" },
+		{ id: "user-2", name: "Eric" },
+		{ id: "user-3", name: "David" },
 		
 	]
 	const INITIAL_USERS_2: User[] = [
 		
-		{ id: "4", name: "Chris" }
+		{ id: "user-4", name: "Chris" }
 	]
 	
 	
@@ -30,57 +31,114 @@ export default function DragAndDropDemoPage() {
 	const [users1, setUsers1] = useState<User[]>( INITIAL_USERS_1 );
 	const [users2, setUsers2] = useState<User[]>( INITIAL_USERS_2 );
 	
+	function getListIdOfUser( user: User ): string|null{
+		
+		//if( user )
+		
+		if( users1.findIndex( u => u.id == user.id) != -1 ){
+			return "List 1";
+		}
+		if( users2.findIndex( u => u.id == user.id) != -1 ){
+			return "List 2";
+		}
+		
+		return null;
+		
+	}
+	
+	
 	function handleDragStart({ active }: DragStartEvent){
 		console.log( { DragStartEvent: { active } } );
 		
-		const activeUser = active.data.current as User;
+		const draggedUser = active.data.current as User;
 		
-		//console.log( activeUser )
-		setActiveUser( activeUser );
+		//console.log( draggedUser )
+		setActiveUser( draggedUser );
 	}
 	function handleDragOver({ active , over }: DragOverEvent){
 		console.log( { DragOverEvent: { active, over } } );
+		
+		if( !over ){
+			return;
+		}
+		
+		const draggedUser = active.data.current as User;
+		const draggedOverUser = over?.data.current as User;
+		
+		if( !draggedOverUser ){
+			return;
+		}
+		
+		const draggedFromListId = getListIdOfUser( draggedUser );
+		const draggedOverListId = getListIdOfUser( draggedOverUser );
+		
+		if( !draggedFromListId || !draggedOverListId ){
+			return;
+		}
+		
+		//dont do anything if didnt drag to a different list
+		if( draggedFromListId == draggedOverListId ){
+			return;
+		}
+		
+		
+		//remove draggedUser from the "draggedFrom" list
+		if( draggedFromListId == "List 1" ){
+			setUsers1( prevUsers1 => prevUsers1.filter( user => user.id != draggedUser.id ))
+		}
+		if( draggedFromListId == "List 2" ){
+			setUsers2( prevUsers2 => prevUsers2.filter( user => user.id != draggedUser.id ))
+		}
+		
+		//add draggedUser to the draggedOver list, specifically to the spot where the draggedOver user was
+		const draggedOverList = draggedOverListId == "List 1" ? users1 : users2;
+		const draggedOverIndex = draggedOverList.findIndex( u => u.id == draggedOverUser.id );
+		
+		if( draggedOverListId == "List 1" ){
+			setUsers1( prevUsers1 => [ 
+				...prevUsers1.slice(0,draggedOverIndex) , 
+				draggedUser , 
+				...prevUsers1.slice(draggedOverIndex,prevUsers1.length)
+			] );
+		}
+		if( draggedOverListId == "List 2" ){
+			setUsers2( prevUsers2 => [ 
+				...prevUsers2.slice(0,draggedOverIndex) , 
+				draggedUser , 
+				...prevUsers2.slice(draggedOverIndex,prevUsers2.length)
+			] );
+		}
+		
 	}
 	function handleDragEnd({ active, over }: DragEndEvent) {
-		if (over) {
-			//const itemId = event.active.id
-			const draggedUser = active.data.current as User;
-			
-			const listId = over.id;
-			console.log( { DragEndEvent: { active, over } } );
-			console.log( draggedUser.name + " was dropped on " + listId );
-			
-			const droppedOnList1 = listId == "List 1";
-			const droppedOnList2 = listId == "List 2";
-			
-			const draggedFromList1 = users1.findIndex( user => user.id == draggedUser.id) != -1;
-			const draggedFromList2 = users2.findIndex( user => user.id == draggedUser.id) != -1;
-			
-			if( droppedOnList1 ){
-				console.log(" first list wtf")
-				
-				if( draggedFromList2 ){
-					users1.push( draggedUser );
-					const newUsers2 = users2.filter( user => user.id != draggedUser.id );
-					setUsers1( users1 );
-					setUsers2( newUsers2 );
-					
-					console.log({ users1: users1 , users2: newUsers2 })
-				}
-			}
-			if( droppedOnList2 ){
-				console.log(" second list wtf")
-				
-				if( draggedFromList1 ){
-					const newUsers1 = users1.filter( user => user.id != draggedUser.id );
-					users2.push( draggedUser );
-					setUsers1( newUsers1 );
-					setUsers2( users2 );
-					
-					console.log({ users1: newUsers1 , users2: users2 })
-				}
-			}
-			
+		if( !over ){
+			return;
+		}
+		
+		const draggedUser = active.data.current as User;
+		const draggedOverUser = over?.data.current as User;
+		
+		const draggedFromListId = getListIdOfUser( draggedUser );
+		const draggedOverListId = getListIdOfUser( draggedOverUser );
+		
+		if( !draggedFromListId || !draggedOverListId ){
+			return;
+		}
+		
+		//dont do anything if didnt drag to a different list
+		if( draggedFromListId !== draggedOverListId ){
+			return;
+		}
+		
+		const draggedOverList = draggedOverListId == "List 1" ? users1 : users2;
+		const draggedIndex = draggedOverList.findIndex( u => u.id == draggedUser.id );
+		const draggedOverIndex = draggedOverList.findIndex( u => u.id == draggedOverUser.id );
+		
+		if( draggedOverListId == "List 1" ){
+			setUsers1( arrayMove(users1,draggedIndex,draggedOverIndex) );
+		}
+		if( draggedOverListId == "List 2" ){
+			setUsers2( arrayMove(users2,draggedIndex,draggedOverIndex) );
 		}
 		
 		setActiveUser( null );
@@ -90,12 +148,21 @@ export default function DragAndDropDemoPage() {
 		...defaultDropAnimation,
 	  };
 	
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	);
+	  
 	return (
 		<div className='drag-and-drop-demo-page'>
 			<h1>{title}</h1>
 			
 			<div className="two-lists">
-				<DndContext 
+				<DndContext
+					sensors={sensors}
+					collisionDetection={closestCorners}
 					onDragStart={handleDragStart}
 					onDragOver={handleDragOver}
 					onDragEnd={handleDragEnd}
@@ -113,3 +180,7 @@ export default function DragAndDropDemoPage() {
 		</div>
 	)
 }
+
+
+
+

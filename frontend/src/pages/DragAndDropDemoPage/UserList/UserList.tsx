@@ -24,25 +24,34 @@ export default function UserList({ title="" , users=[] }: UserListProps) {
 	
 	return (
 		
-		<SortableContext
-			id={title}
-			items={users}
-			strategy={verticalListSortingStrategy}
-			>
-			<div className={cn} ref={setNodeRef}>
+		
+				
+				
+			<div className={cn} >
 				<h2 className="title">{title}</h2>
-				<div className="user-area">
-					
-					{ users.map( (user:User) => 
-						<SortableUserItem user={user} key={user.id}>
-							
-						</SortableUserItem>
+				
+				<SortableContext
+					id={title}
+					items={users}
+					strategy={verticalListSortingStrategy}
+					>
 						
-					) }
+					<div className="user-area" ref={setNodeRef} >
 					
-				</div>
+						{ users.map( (user:User) => 
+							<SortableUserItem user={user} key={user.id}>
+								
+							</SortableUserItem>
+							
+						) }
+					
+					</div>
+					
+				</SortableContext>
+				
+				
 			</div>
-		</SortableContext>
+		
 		
 		
 	)
