@@ -22,6 +22,7 @@ export default function NavBar() {
 			<NavLink to="/all" className='nav-link'>All</NavLink>
 			<NavLink to="/today" className='nav-link'>Today</NavLink>
 			<NavLink to="/demo" className='nav-link'>Demo</NavLink>
+			<NavLink to="/demo2" className='nav-link'>Demo 2</NavLink>
 
 		</div>
 	)

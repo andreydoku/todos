@@ -14,48 +14,70 @@ export default function DragAndDropDemoPage() {
 	const [activeUser, setActiveUser] = useState<User|null>(null);
 	
 	
-	const ALL_USERS: User[] = [
-		{ id: 1, name: "Andrey" },
-		{ id: 2, name: "Eric" },
-		{ id: 3, name: "David" },
-		{ id: 4, name: "Chris" },
+	const INITIAL_USERS_1: User[] = [
+		{ id: "1", name: "Andrey" },
+		{ id: "2", name: "Eric" },
+		{ id: "3", name: "David" },
+		
+	]
+	const INITIAL_USERS_2: User[] = [
+		
+		{ id: "4", name: "Chris" }
 	]
 	
-	const [users1, setUsers1] = useState<User[]>( ALL_USERS );
-	const [users2, setUsers2] = useState<User[]>([]);
+	
+	
+	const [users1, setUsers1] = useState<User[]>( INITIAL_USERS_1 );
+	const [users2, setUsers2] = useState<User[]>( INITIAL_USERS_2 );
 	
 	function handleDragStart({ active }: DragStartEvent){
+		console.log( { DragStartEvent: { active } } );
+		
 		const activeUser = active.data.current as User;
 		
-		console.log( activeUser )
+		//console.log( activeUser )
 		setActiveUser( activeUser );
 	}
 	function handleDragOver({ active , over }: DragOverEvent){
-		console.log( { active, over } );
+		console.log( { DragOverEvent: { active, over } } );
 	}
 	function handleDragEnd({ active, over }: DragEndEvent) {
 		if (over) {
 			//const itemId = event.active.id
-			const user = active.data.current as User;
+			const draggedUser = active.data.current as User;
 			
 			const listId = over.id;
-			console.log( { active, over } );
-			console.log( user.name + " was dropped on " + listId );
+			console.log( { DragEndEvent: { active, over } } );
+			console.log( draggedUser.name + " was dropped on " + listId );
 			
-			if( listId == "List 1" ){
-				if( !users1.includes(user) && users2.includes(user) ){
-					users1.push( user );
-					const newUsers2 = users2.filter( name => name != user );
+			const droppedOnList1 = listId == "List 1";
+			const droppedOnList2 = listId == "List 2";
+			
+			const draggedFromList1 = users1.findIndex( user => user.id == draggedUser.id) != -1;
+			const draggedFromList2 = users2.findIndex( user => user.id == draggedUser.id) != -1;
+			
+			if( droppedOnList1 ){
+				console.log(" first list wtf")
+				
+				if( draggedFromList2 ){
+					users1.push( draggedUser );
+					const newUsers2 = users2.filter( user => user.id != draggedUser.id );
 					setUsers1( users1 );
 					setUsers2( newUsers2 );
+					
+					console.log({ users1: users1 , users2: newUsers2 })
 				}
 			}
-			if( listId == "List 2" ){
-				if( users1.includes(user) && !users2.includes(user) ){
-					const newUsers1 = users1.filter( name => name != user );
-					users2.push( user );
+			if( droppedOnList2 ){
+				console.log(" second list wtf")
+				
+				if( draggedFromList1 ){
+					const newUsers1 = users1.filter( user => user.id != draggedUser.id );
+					users2.push( draggedUser );
 					setUsers1( newUsers1 );
 					setUsers2( users2 );
+					
+					console.log({ users1: newUsers1 , users2: users2 })
 				}
 			}
 			
