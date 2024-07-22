@@ -1,15 +1,17 @@
-import { DndContext } from "@dnd-kit/core";
+import { defaultDropAnimation, DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, DropAnimation } from "@dnd-kit/core";
 import "./DragAndDropDemoPage.scss";
 import UserList from "./UserList/UserList";
 import { useState } from "react";
 import { User } from "./User";
+import UserItem from "./UserItem/UserItem";
+import { log } from "console";
 
 
 export default function DragAndDropDemoPage() {
 	
 	const title = "Drag and Drop Demo";
 	
-	const [activeUserId, setActiveUserId] = useState<null | string>(null);
+	const [activeUser, setActiveUser] = useState<User|null>(null);
 	
 	
 	const ALL_USERS: User[] = [
@@ -22,14 +24,22 @@ export default function DragAndDropDemoPage() {
 	const [users1, setUsers1] = useState<User[]>( ALL_USERS );
 	const [users2, setUsers2] = useState<User[]>([]);
 	
-	
-	function handleDragEnd(event) {
-		if (event.over) {
+	function handleDragStart({ active }: DragStartEvent){
+		const activeUser = active.data.current as User;
+		
+		console.log( activeUser )
+		setActiveUser( activeUser );
+	}
+	function handleDragOver({ active , over }: DragOverEvent){
+		console.log( { active, over } );
+	}
+	function handleDragEnd({ active, over }: DragEndEvent) {
+		if (over) {
 			//const itemId = event.active.id
-			const user = event.active.data.current as User;
+			const user = active.data.current as User;
 			
-			const listId = event.over.id;
-			console.log({event})
+			const listId = over.id;
+			console.log( { active, over } );
 			console.log( user.name + " was dropped on " + listId );
 			
 			if( listId == "List 1" ){
@@ -50,16 +60,29 @@ export default function DragAndDropDemoPage() {
 			}
 			
 		}
+		
+		setActiveUser( null );
 	}
-
+	
+	const dropAnimation: DropAnimation = {
+		...defaultDropAnimation,
+	  };
+	
 	return (
 		<div className='drag-and-drop-demo-page'>
 			<h1>{title}</h1>
 			
 			<div className="two-lists">
-				<DndContext onDragEnd={handleDragEnd}>
+				<DndContext 
+					onDragStart={handleDragStart}
+					onDragOver={handleDragOver}
+					onDragEnd={handleDragEnd}
+				>
 					<UserList title="List 1" users={users1} />
 					<UserList title="List 2" users={users2} />
+					<DragOverlay dropAnimation={dropAnimation}>
+						{activeUser ? <UserItem user={activeUser} /> : null}
+					</DragOverlay>
 				</DndContext>
 			</div>
 			
