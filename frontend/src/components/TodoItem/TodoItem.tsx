@@ -4,61 +4,100 @@ import { FaTrash } from 'react-icons/fa';
 import { FaRegSquare , FaCheckSquare } from 'react-icons/fa';
 import { useState , useEffect } from 'react';
 import { Todo } from '../../models/Todo';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import ButtonDatePicker from '../ButtonDatePicker/ButtonDatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 type TodoItemProps = {
 	todo: Todo
-	checkboxClicked: ( id:string , newChecked:boolean ) => void
+	doneChanged: ( id:string , newDone:boolean ) => void
 	titleChanged: ( id:string , newTitle:string ) => void
+	dateChanged: ( id:string , newDate:string|null ) => void
 	deleteClicked: ( id:string ) => void
 }
-function TodoItem({ todo , checkboxClicked , titleChanged , deleteClicked }: TodoItemProps){
+function TodoItem({ todo , doneChanged , titleChanged , dateChanged , deleteClicked }: TodoItemProps){
 	
-	if( checkboxClicked === undefined )  checkboxClicked = () => {};
-	if( titleChanged === undefined ) titleChanged = () => {}
-	if( deleteClicked === undefined ) deleteClicked = () => {}
-	
-	var className = "todo-item shadow-2";
+	let className = "todo-item";
 	if( todo.done ) className += " done";
+	
+	
+	
+	function datejsToString( dayjs: Dayjs|null ){
+		
+		if( dayjs == null )  return null;
+		return dayjs.format('YYYY-MM-DD');
+		
+	}
+	function stringToDatejs( str: string|null|undefined ){
+		
+		if( !str )  return null;
+		return dayjs( str );
+	}
 	
 	
 	return(
 		
 		<div className={className}>
 			
-			<div className='left'>
-				
-				{todo.done ? 
-					// <FaRegCheckSquare className='check-box'/> 
-					<FaCheckSquare 
-						className='check-box' 
-						onClick={ () => checkboxClicked( todo.id ,false )}
-					/> 
-					: 
-					<FaRegSquare   
-						className='check-box' 
-						onClick={ () => checkboxClicked( todo.id , true ) }
-					/> 
-				}
-				
-				<TitleField 
-					title={todo.title} 
-					onTitleChange={ (newTitle) => titleChanged( todo.id , newTitle ) }
+			<DoneCheckbox
+				checked = {todo.done}
+				checkboxClicked = { (checked) => doneChanged( todo.id , checked ) }
+			/>
+			
+			<TitleField 
+				title={todo.title} 
+				onTitleChange={ (newTitle) => titleChanged( todo.id , newTitle ) }
+			/>
+			
+			{/* <DateLabel date={todo.doDate}/> */}
+			
+			<LocalizationProvider dateAdapter={AdapterDayjs}>
+				<ButtonDatePicker
+					label={todo.doDate}
+					value={ stringToDatejs(todo.doDate) }
+					onChange={(dayjs) => dateChanged( todo.id , datejsToString(dayjs) )}
 				/>
-				
-				
-			</div>
+    		</LocalizationProvider>
 			
 			<FaTrash 
 				className='delete-icon'
 				onClick={ () => deleteClicked( todo.id ) }
 			/>
-			
+				
 		</div>
 		
 	);
 	
 }
 export default TodoItem;
+
+type DoneCheckboxProps = { 
+	checked: boolean,
+	checkboxClicked: ( checked:boolean ) => void }
+function DoneCheckbox({ checked , checkboxClicked }: DoneCheckboxProps ){
+	
+	if( checked ){
+		
+		return(
+			<FaCheckSquare 
+				className='check-box' 
+				onClick={ () => checkboxClicked( false )}
+			/> 
+		);
+		
+	}
+	else{
+		return(
+			<FaRegSquare   
+				className='check-box' 
+				onClick={ () => checkboxClicked( true ) }
+			/>
+		);
+	}
+	
+	
+}
 
 
 type TitleFieldProps = {
@@ -122,6 +161,16 @@ function TitleField({ title , onTitleChange }: TitleFieldProps){
 	
 }
 
+type DateLabelProps = {
+	date: string|undefined
+}
+function DateLabel({ date }: DateLabelProps){
+	return(
+		<div className='date-label'>
+			{date}
+		</div>
+	);
+}
 
 
 

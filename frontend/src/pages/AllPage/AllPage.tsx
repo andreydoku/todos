@@ -3,10 +3,10 @@ import { useState , useEffect } from "react";
 import TodoList from "../../components/TodoList/TodoList";
 import "./AllPage.scss";
 import { Todo } from "../../models/Todo";
-import { TodosRestClient } from "../../restClient/todosRestClient";
+
 import { TodoUpdateRequest } from "../../models/TodoUpdateRequest";
-import { log } from "console";
 import AddTaskButton from "../../components/AddTaskButton/AddTaskButton";
+import { TodosRestClient } from "../../restClient/TodosRestClient";
 
 
 
@@ -44,9 +44,9 @@ export default function AllPage() {
 		
 	}
 	
-	const checkboxClicked = async ( id:string , checked:boolean ) => {
+	const doneChanged = async ( id:string , newDone:boolean ) => {
 		
-		updateTodo( id , { done: checked } );
+		updateTodo( id , { done: newDone } );
 		
 	}
 	
@@ -59,6 +59,18 @@ export default function AllPage() {
 		
 		//handle 400 errors? like if title is empty?
 		updateTodo( id , { title: newTitle } );
+		
+	}
+	
+	async function dateChanged( id:string , newDate:string|null ){
+		
+		console.log( "doDate changed: " 
+			+ "\n\t" + "new doDate: " + newDate 
+			+ "\n\t" + "id: " + id 
+		);
+		
+		//handle 400 errors? like if title is empty?
+		updateTodo( id , { doDate: newDate } );
 		
 	}
 	
@@ -102,8 +114,9 @@ export default function AllPage() {
 			
 			<TodoList 
 				todos={todos} 
-				checkboxClicked={ (id,checked)=>checkboxClicked(id,checked) }
+				doneChanged={ (id,newDone)=>doneChanged(id,newDone) }
 				titleChanged={ (id,newTitle) => titleChanged(id,newTitle) }
+				dateChanged={ (id,newDate) => dateChanged(id,newDate) }
 				deleteClicked={ (id) => deleteClicked(id) }
 			/>
 			

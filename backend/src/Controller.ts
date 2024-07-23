@@ -4,7 +4,7 @@ import { Todo } from "./Todo";
 
 import { Service } from "./Service";
 import { log } from 'console';
-import { isTodoUpdateRequest, TodoUpdateRequest } from './TodoUpdateRequest';
+import { isTodoUpdateRequest as validateTodoUpdateRequest, TodoUpdateRequest } from './TodoUpdateRequest';
 
 
 const service:Service = new Service();
@@ -66,11 +66,12 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	const requestBody = JSON.parse(event.body);
 	const todo:Todo = requestBody as Todo;
 	
-	if( !todo.title ){
+	const error = validateRequestForCreateTodo( todo );
+	if( error ){
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
-				message: "Request body is missing the title"
+				message: error,
 			})
 		};
 	}
@@ -101,6 +102,62 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	}
 	
 }
+export function validateRequestForCreateTodo(todo: Todo): string|null{
+	
+	if( todo.title == null || todo.title == undefined ){
+		return "missing title";
+	}
+	
+	if( todo.title.trim() === "" ){
+		return "title cannot be blank";
+	}
+	
+	
+	if( todo.title == null || todo.title == undefined ){
+		return "missing title";
+	}
+	
+	if( todo.doDate != undefined && todo.doDate.trim() === "" ){
+		return "date cannot be blank";
+	}
+	
+	const dateError = validateDate( todo.doDate );
+	if( dateError )  return dateError;
+	
+	
+	return null;
+	
+}
+function validateDate(dateStr:string|null|undefined) :string|null{
+	
+	if( dateStr == undefined ){
+		return "date cannot be undefined";
+	}
+	if( dateStr == null ){
+		return null;
+	}
+	
+	if( dateStr.trim() === "" ){
+		return "date cannot be blank";
+	}
+	
+	
+	try{
+		const date:Date = new Date( dateStr );
+		
+		const properFormatted = date.toISOString().split('T')[0];
+		if( properFormatted !== dateStr ){
+			return "slightly invalid format"
+		}
+		
+	}
+	catch(error){
+		return "invalid date format";
+	}
+	
+	return null;
+
+}
 
 // POST /todos/{id}
 export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -118,7 +175,7 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		};
 	}
 	
-	if(!event.body ){
+	if( !event.body ){
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
@@ -127,27 +184,27 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		};
 	}
 	
-	const requestBody = JSON.parse(event.body) ;
-	if( !isTodoUpdateRequest(requestBody) ){
+	const requestBody = JSON.parse(event.body);
+	const validationError = validateTodoUpdateRequest(requestBody);
+	if( validationError ){
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
-				message: "Request body invalid",
+				message: validationError,
 			})
 		};
 	}
 	
 	const todoUpdateRequest:TodoUpdateRequest = requestBody as TodoUpdateRequest;
-	
-	if( todoUpdateRequest.title == "" ){
+	const dateError = validateDate( todoUpdateRequest.doDate );
+	if( dateError ){
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
-				message: "title cannot be blank",
+				message: "Invalid doDate",
 			})
 		};
 	}
-	
 	
 	try {
 		

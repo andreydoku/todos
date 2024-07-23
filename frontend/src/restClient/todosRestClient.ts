@@ -32,6 +32,40 @@ export class TodosRestClient {
 			throw error;
 		}
 	}
+	async getTodosForDate( date:Date ): Promise<Todo[]> {
+	
+		const dateString = date.toISOString().split('T')[0];//ISO format yyyy-mm-dd
+		
+		const params = new URLSearchParams({
+			'date': dateString,
+		});
+		
+		const url = `${hostUrl}/todos?${params}`;
+		
+		
+		try {
+			const response = await fetch(url, {
+				method: "GET",
+				mode: "cors",
+			});
+
+			if (!response.ok) {
+				throw new Error(`Response status: ${response.status}`);
+			}
+
+			const json = await response.json();
+			console.log(json);
+
+			return json as Todo[];
+
+		}
+		catch (error: any) {
+			console.error(error.message);
+			throw error;
+		}
+	}
+	
+	
 	
 	async updateTodo( id:string , todoUpdateRequest:TodoUpdateRequest ): Promise<Todo> {
 		
@@ -89,6 +123,8 @@ export class TodosRestClient {
 	async addTodo( todo:Todo ): Promise<Todo> {
 		
 		const url = hostUrl + `/todos`;
+		
+		
 		try {
 			const response = await fetch(url, {
 				method: "POST",

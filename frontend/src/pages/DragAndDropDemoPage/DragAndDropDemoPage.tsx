@@ -115,6 +115,11 @@ export default function DragAndDropDemoPage() {
 			return;
 		}
 		
+		if( over.id.startsWith("List") ){
+			//TODO - handle dragging over an empty list - the over ID is the list ID
+			return;
+		}
+		
 		const draggedUser = active.data.current as User;
 		const draggedOverUser = over?.data.current as User;
 		

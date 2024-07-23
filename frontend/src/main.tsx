@@ -14,7 +14,7 @@ import ErrorPage from './pages/ErrorPage/ErrorPage';
 
 import './index.scss';
 import DragAndDropDemoPage from './pages/DragAndDropDemoPage/DragAndDropDemoPage';
-import DndDemoPage2 from './pages/DndDemoPage2/DndDemoPage2';
+import ThreeDayPage from './pages/ThreeDayPage/ThreeDayPage';
 
 
 
@@ -29,7 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 					<Route path="/all" element={<AllPage />} />
 					<Route path="/today" element={<AboutPage />} />
 					<Route path="/demo" element={<DragAndDropDemoPage />} />
-					<Route path="/demo2" element={<DndDemoPage2 />} />
+					<Route path="/three-day" element={<ThreeDayPage />} />
 					
 					<Route path="*" element={<ErrorPage />} />
 				</Routes>

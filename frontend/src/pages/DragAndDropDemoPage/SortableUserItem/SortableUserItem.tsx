@@ -21,7 +21,7 @@ export default function SortableUserItem({ user }: SortableUserItemProps) {
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
-		opacity: isDragging ? 0.6 : 1,
+		opacity: isDragging ? 0.0 : 1,
 	};
 
 	return (
