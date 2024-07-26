@@ -1,13 +1,18 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { Todo } from "./Todo";
-
 import { Service } from "./Service";
-import { log } from 'console';
-import { isTodoUpdateRequest as validateTodoUpdateRequest, TodoUpdateRequest } from './TodoUpdateRequest';
+import { validateDate, validateTodoUpdateRequest } from './Validator';
+import { TodoUpdateRequest } from './TodoUpdateRequest';
+
 
 
 const service:Service = new Service();
+
+const CORS_HEADERS = {
+	"Access-Control-Allow-Origin": '*',
+	"Access-Control-Allow-Credentials": true,
+}
 
 // GET /todos/{id}
 export const getTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -83,6 +88,7 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		
 		return {
 			statusCode: 200,
+			headers: CORS_HEADERS,
 			body: JSON.stringify( createdTodo )
 		};
 		
@@ -128,36 +134,7 @@ export function validateRequestForCreateTodo(todo: Todo): string|null{
 	return null;
 	
 }
-function validateDate(dateStr:string|null|undefined) :string|null{
-	
-	if( dateStr == undefined ){
-		return "date cannot be undefined";
-	}
-	if( dateStr == null ){
-		return null;
-	}
-	
-	if( dateStr.trim() === "" ){
-		return "date cannot be blank";
-	}
-	
-	
-	try{
-		const date:Date = new Date( dateStr );
-		
-		const properFormatted = date.toISOString().split('T')[0];
-		if( properFormatted !== dateStr ){
-			return "slightly invalid format"
-		}
-		
-	}
-	catch(error){
-		return "invalid date format";
-	}
-	
-	return null;
 
-}
 
 // POST /todos/{id}
 export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -196,15 +173,6 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	}
 	
 	const todoUpdateRequest:TodoUpdateRequest = requestBody as TodoUpdateRequest;
-	const dateError = validateDate( todoUpdateRequest.doDate );
-	if( dateError ){
-		return {
-			statusCode: 400,
-			body: JSON.stringify({
-				message: "Invalid doDate",
-			})
-		};
-	}
 	
 	try {
 		
@@ -212,6 +180,7 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		
 		return {
 			statusCode: 200,
+			headers: CORS_HEADERS,
 			body: JSON.stringify(result)
 		};
 		
@@ -255,6 +224,7 @@ export const deleteTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		
 		return {
 			statusCode: 200,
+			headers: CORS_HEADERS,
 			body: JSON.stringify( deletedTodo )
 		};
 		
@@ -286,10 +256,7 @@ export const getAllTodos: APIGatewayProxyHandler = async (event: APIGatewayProxy
 		
 		const response = {
 			statusCode: 200,
-			headers: {
-				"Access-Control-Allow-Origin": '*',
-				"Access-Control-Allow-Credentials": true,
-			},
+			headers: CORS_HEADERS,
 			body: JSON.stringify( Todos )
 		};
 		return response;

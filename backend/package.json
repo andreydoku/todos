@@ -6,15 +6,20 @@
   "author": "Andrey Dokuchayev",
   "main": "dist/index.js",
   "private": true,
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.584.0",
     "@aws-sdk/lib-dynamodb": "^3.614.0",
     "@aws-sdk/util-dynamodb": "^3.584.0",
     "aws-lambda": "^1.0.7",
+    "dayjs": "^1.11.12",
     "sanitize-html": "^2.11.0",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "@serverless/utils": "^6.15.0",
     "@types/aws-lambda": "^8.10.138",
     "@types/jest": "^29.5.12",

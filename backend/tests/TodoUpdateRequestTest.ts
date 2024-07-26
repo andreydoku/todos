@@ -1,5 +1,5 @@
 import { log } from "console";
-import { isTodoUpdateRequest } from "../src/TodoUpdateRequest";
+import { validateTodoUpdateRequest } from "../src/TodoUpdateRequest";
 
 
 
@@ -9,7 +9,7 @@ const requestBody = {
 }
 
 
-const result = isTodoUpdateRequest( requestBody );
+const result = validateTodoUpdateRequest( requestBody );
 log( result )
 
 //npx ts-node tests/TodoUpdateRequestTest.ts

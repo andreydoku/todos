@@ -11,16 +11,23 @@ import dayjs, { Dayjs } from 'dayjs';
 
 type TodoItemProps = {
 	todo: Todo
-	doneChanged: ( id:string , newDone:boolean ) => void
-	titleChanged: ( id:string , newTitle:string ) => void
-	dateChanged: ( id:string , newDate:string|null ) => void
-	deleteClicked: ( id:string ) => void
+	pickedUp?: boolean
+	doneChanged?: ( id:string , newDone:boolean ) => void
+	titleChanged?: ( id:string , newTitle:string ) => void
+	dateChanged?: ( id:string , newDate:string|null ) => void
+	deleteClicked?: ( id:string ) => void
 }
-function TodoItem({ todo , doneChanged , titleChanged , dateChanged , deleteClicked }: TodoItemProps){
+function TodoItem({ todo , pickedUp=false, doneChanged , titleChanged , dateChanged , deleteClicked }: TodoItemProps){
 	
-	let className = "todo-item";
-	if( todo.done ) className += " done";
+	let cn = "todo-item";
+	if( todo.done ) cn += " done";
+	if( pickedUp ) cn += " picked-up";
 	
+	
+	if( !doneChanged) doneChanged = ()=>{}
+	if( !titleChanged) titleChanged = ()=>{}
+	if( !dateChanged) dateChanged = ()=>{}
+	if( !deleteClicked) deleteClicked = ()=>{}
 	
 	
 	function datejsToString( dayjs: Dayjs|null ){
@@ -36,9 +43,11 @@ function TodoItem({ todo , doneChanged , titleChanged , dateChanged , deleteClic
 	}
 	
 	
+	
+	
 	return(
 		
-		<div className={className}>
+		<div className={cn}>
 			
 			<DoneCheckbox
 				checked = {todo.done}
@@ -50,20 +59,16 @@ function TodoItem({ todo , doneChanged , titleChanged , dateChanged , deleteClic
 				onTitleChange={ (newTitle) => titleChanged( todo.id , newTitle ) }
 			/>
 			
-			{/* <DateLabel date={todo.doDate}/> */}
 			
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<ButtonDatePicker
-					label={todo.doDate}
+					label={ todo.doDate }
 					value={ stringToDatejs(todo.doDate) }
 					onChange={(dayjs) => dateChanged( todo.id , datejsToString(dayjs) )}
 				/>
     		</LocalizationProvider>
 			
-			<FaTrash 
-				className='delete-icon'
-				onClick={ () => deleteClicked( todo.id ) }
-			/>
+			<DeleteButton deleteClicked={() => deleteClicked(todo.id)} />
 				
 		</div>
 		
@@ -80,19 +85,23 @@ function DoneCheckbox({ checked , checkboxClicked }: DoneCheckboxProps ){
 	if( checked ){
 		
 		return(
-			<FaCheckSquare 
-				className='check-box' 
-				onClick={ () => checkboxClicked( false )}
-			/> 
+			<div className='done-checkbox checked'>
+				<FaCheckSquare 
+					onClick={ () => checkboxClicked( false )}
+				/> 
+			</div>
+				
 		);
 		
 	}
 	else{
 		return(
-			<FaRegSquare   
-				className='check-box' 
-				onClick={ () => checkboxClicked( true ) }
-			/>
+			<div className='done-checkbox unchecked'>
+				<FaRegSquare   
+					onClick={ () => checkboxClicked( true ) }
+				/>
+			</div>
+			
 		);
 	}
 	
@@ -117,8 +126,6 @@ function TitleField({ title , onTitleChange }: TitleFieldProps){
 	if( onTitleChange === undefined ) onTitleChange = () => {}
 	
 	function handleSubmit(e: any){
-		console.log( "handleSubmit: " + typeof e );
-		
 		e.preventDefault();
 		
 		e.target.children[0].blur();
@@ -127,13 +134,12 @@ function TitleField({ title , onTitleChange }: TitleFieldProps){
 	
 	function handleTextChange(e: any){
 		
-		console.log( "handleTextChange: " + typeof e );
 		setText( e.target.value );
 		
 	}
 	function handleFocusLost(e: any){
 		
-		console.log( "handleFocusLost: " + typeof e );
+		console.log({ handleFocusLost: e });
 		
 		if( text !== title ){
 			setText( title );
@@ -161,13 +167,16 @@ function TitleField({ title , onTitleChange }: TitleFieldProps){
 	
 }
 
-type DateLabelProps = {
-	date: string|undefined
+type DeleteButtonProps = {
+	deleteClicked: () => void
 }
-function DateLabel({ date }: DateLabelProps){
+function DeleteButton({ deleteClicked }: DeleteButtonProps){
 	return(
-		<div className='date-label'>
-			{date}
+		<div className='delete-button'>
+			<FaTrash 
+				className='delete-icon'
+				onClick={ () => deleteClicked() }
+			/>
 		</div>
 	);
 }

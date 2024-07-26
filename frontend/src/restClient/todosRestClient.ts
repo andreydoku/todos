@@ -22,7 +22,7 @@ export class TodosRestClient {
 			}
 
 			const json = await response.json();
-			console.log(json);
+			//console.log(json);
 
 			return json as Todo[];
 
@@ -78,7 +78,8 @@ export class TodosRestClient {
 			});
 
 			if (!response.ok) {
-				throw new Error(`Response status: ${response.status}`);
+				const json = await response.json();
+				throw new Error( `${response.status}: ${JSON.stringify(json)}` );
 			}
 
 			const json = await response.json();
