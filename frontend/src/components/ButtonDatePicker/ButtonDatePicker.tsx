@@ -7,6 +7,13 @@ import { BaseSingleInputFieldProps, DateValidationError, FieldSection } from '@m
 import { FaCalendarDay } from "react-icons/fa6";
 import { useState } from 'react';
 
+import dayjs from 'dayjs'
+import updateLocale from 'dayjs/plugin/updateLocale'
+
+dayjs.extend(updateLocale)
+dayjs.updateLocale('en', {
+    weekStart: 1,
+})
 
 export default function ButtonDatePicker(
 	props: Omit<DatePickerProps<Dayjs>, 'open' | 'onOpen' | 'onClose'>,
