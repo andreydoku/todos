@@ -5,7 +5,7 @@ const hostUrl = "https://keiy978fn5.execute-api.us-east-2.amazonaws.com";
 
 
 
-export class TodosRestClient {
+export class RestClient {
 
 	async getAllTodos(): Promise<Todo[]> {
 

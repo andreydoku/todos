@@ -11,7 +11,7 @@ import ErrorPage from './pages/ErrorPage/ErrorPage';
 import ThreeDayPage from './pages/ThreeDayPage/ThreeDayPage';
 
 import { Todo } from './models/Todo';
-import { TodosRestClient } from './restClient/TodosRestClient';
+import { RestClient } from './restClient/RestClient';
 import { TodoUpdateRequest } from './models/TodoUpdateRequest';
 
 import './index.scss';
@@ -26,7 +26,7 @@ export default function App() {
 	// 	{ id: "3" , title: "blah 3" , done: false },
 	// ]
 	
-	const todosRestClient:TodosRestClient = new TodosRestClient();
+	const todosRestClient:RestClient = new RestClient();
 	const [todos, setTodos] = useState<Todo[]>([]);
 	const [, forceUpdate] = useReducer(x => x + 1, 0);
 	
