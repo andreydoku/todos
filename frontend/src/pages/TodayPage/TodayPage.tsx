@@ -2,11 +2,11 @@
 
 import dayjs, { Dayjs } from "dayjs";
 import { TodosState } from "../../main";
-import "./TodayPage.scss";
-
-import DraggableTodoBoard from "./DraggableTodoBoard/DraggableTodoBoard";
 import { Todo } from "../../models/Todo";
+import { datejsToString } from "../../utils/utils";
+import DraggableSortableTodoBoard from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
 
+import "./TodayPage.scss";
 
 
 export default function TodayPage({ todosState }: {todosState:TodosState}) {
@@ -15,8 +15,8 @@ export default function TodayPage({ todosState }: {todosState:TodosState}) {
 	
 	const title = todayDate.format('MMM D, YYYY');
 	
-	const { todos , doneChanged , titleChanged , dateChanged , deleteClicked , addTaskClicked } = todosState;
-	
+	//const { todos , doneChanged , titleChanged , dateChanged , deleteClicked , addTaskClicked } = todosState;
+	const { todos , dateChanged } = todosState;
 	
 	
 	const todaysTodos:Todo[] = todos.filter( todo => todo.doDate == todayDate.format('YYYY-MM-DD') )
@@ -27,31 +27,24 @@ export default function TodayPage({ todosState }: {todosState:TodosState}) {
 	
 	function droppedOnList( todoId:string , listId:string , index:number ){
 		
-		
 		let newDate = null;
 		
 		if( listId == "today" ) newDate = todayDate;
 		else if( listId == "backlog" ) newDate = null;
 		else console.error("unrecognized listId: " + listId)
 		
-		console.log({ todayDate:datejsToString(todayDate)  , newDate: datejsToString(newDate) });
+		console.log({ todayDate:datejsToString(todayDate)  , newDate: datejsToString(newDate) , index });
 		
 		dateChanged(todoId , datejsToString( newDate ) );
 		
 	}
-	function datejsToString( dayjs: Dayjs|null ){
-		
-		if( dayjs == null )  return null;
-		return dayjs.format('YYYY-MM-DD');
-		
-	}
-	
+
 	
 	return (
 		<div className="today-page">
 			<h1 className="title">{title}</h1>
 			
-			<DraggableTodoBoard 
+			<DraggableSortableTodoBoard 
 				draggableLists={[
 					{
 						id: "today",
@@ -67,8 +60,6 @@ export default function TodayPage({ todosState }: {todosState:TodosState}) {
 				droppedOnList={droppedOnList}
 				todosState={todosState}
 			/>
-			
-			
 			
 
 		</div>

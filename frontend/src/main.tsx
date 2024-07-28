@@ -3,22 +3,19 @@ import ReactDOM from 'react-dom/client'
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-
 import NavBar from './NavBar/NavBar';
 
 import AllPage from './pages/AllPage/AllPage';
 import TodayPage from './pages/TodayPage/TodayPage';
-
 import ErrorPage from './pages/ErrorPage/ErrorPage';
-
-
-import './index.scss';
-import DragAndDropDemoPage from './pages/DragAndDropDemoPage/DragAndDropDemoPage';
 import ThreeDayPage from './pages/ThreeDayPage/ThreeDayPage';
+
 import { Todo } from './models/Todo';
 import { TodosRestClient } from './restClient/TodosRestClient';
 import { TodoUpdateRequest } from './models/TodoUpdateRequest';
 
+import './index.scss';
+import CalendarPage from './pages/CalendarPage/CalendarPage';
 
 
 export default function App() {
@@ -31,7 +28,7 @@ export default function App() {
 	
 	const todosRestClient:TodosRestClient = new TodosRestClient();
 	const [todos, setTodos] = useState<Todo[]>([]);
-	const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+	const [, forceUpdate] = useReducer(x => x + 1, 0);
 	
 	useEffect( () => {
 		fetchAllTodos();
@@ -139,9 +136,9 @@ export default function App() {
 					
 					<Route path="/all" element={<AllPage todosState={todosState}/>} />
 					<Route path="/today" element={<TodayPage todosState={todosState}/>} />
-					<Route path="/three-day" element={<ThreeDayPage />} />
+					<Route path="/three-day" element={<ThreeDayPage todosState={todosState} />} />
+					<Route path="/calendar" element={<CalendarPage todosState={todosState} />} />
 					
-					<Route path="/demo" element={<DragAndDropDemoPage />} />
 					<Route path="*" element={<ErrorPage />} />
 				</Routes>
 			</main>

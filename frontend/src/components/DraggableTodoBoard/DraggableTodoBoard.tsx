@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
+
+import { defaultDropAnimation, DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, DropAnimation, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { restrictToWindowEdges} from '@dnd-kit/modifiers';
+
+
+import { TodosState } from "../../main";
+import { Todo } from "../../models/Todo";
+import TodoItem from "../TodoItem/TodoItem";
+
+
 import "./DraggableTodoBoard.scss";
-import { Todo } from "../../../models/Todo";
-import DraggableTodoList from "../DraggableTodoList/DraggableTodoList";
-import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import TodoItem from "../../../components/TodoItem/TodoItem";
-import { TodosState } from "../../../main";
+import DraggableTodoList from "./DraggableTodoList/DraggableTodoList";
 
-
+  
 type DraggableTodoBoardProps = {
 	draggableLists: DraggableList[],
 	droppedOnList: (todoId:string , listId:string , index:number) => void;
@@ -16,16 +22,15 @@ export type DraggableList = {
 	id: string
 	title: string
 	todos: Todo[]
+	className?: string
 }
 export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 	
-	
 	const [draggableLists, setDraggableLists] = useState( [...props.draggableLists] );
-	//console.log({draggableLists})
+	const [draggedTodo, setDraggedTodo] = useState<Todo|null>( null );
 	
-	//TODO - rename to draggedTodo
-	const [activeTodo, setActiveTodo] = useState<Todo|null>( null );
-	//console.log({activeTodo: activeTodo});
+	const [draggedOverList, setDraggedOverList] = useState<DraggableList|null>( null );
+	
 	
 	const { doneChanged , titleChanged , dateChanged , deleteClicked } = props.todosState;
 	if( !doneChanged ){
@@ -50,7 +55,7 @@ export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 		console.log( { DragStartEvent: { active } } );
 		
 		const draggedTodo = active.data.current?.value as Todo;
-		setActiveTodo( draggedTodo );
+		setDraggedTodo( draggedTodo );
 	}
 	function handleDragOver({ active , over }: DragOverEvent){
 		console.log( { DragOverEvent: { active, over } } );
@@ -71,54 +76,14 @@ export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 		
 		console.log("handleDragOver - dragged over type: " + draggedOverThing.type + " (" + draggedOverThing.value.title + ")" );
 		
-		if( draggedOverThing.type == "Todo" ){
-			console.log( {"draggedOverThing.value": draggedOverThing.value } )
-			const draggedOverTodo = draggedOverThing.value as Todo;
-			handleDraggedOverTodo( draggedTodo , draggedOverTodo );
-		}
-		
 		if( draggedOverThing.type == "DraggableList" ){
 			const draggedOverList:DraggableList = draggedOverThing.value as DraggableList;
 			handleDraggedOverList( draggedTodo , draggedOverList );
 		}
 		
 		
-		// const draggedOverTodo = over?.data.current as Todo;
-		// if( draggedOverTodo ){
-		// 	handleDraggedOverTodo( draggedTodo , draggedOverTodo );
-		// }
-		// else{
-		// 	console.log("dragged over someting other than a todo");
-			
-		// }
-		
-		
-		
-		
 	}
-	function handleDraggedOverTodo( draggedTodo:Todo , draggedOverTodo:Todo ){
-		
-		console.log( "handleDraggedOverTodo: " + draggedTodo.title );
-		const draggedFromList = getDraggableListOfTodo( draggedTodo );
-		const draggedOverList = getDraggableListOfTodo( draggedOverTodo );
-		
-		if( !draggedFromList || !draggedOverList ){
-			console.log("handleDraggedOverTodo - no draggedFromList/draggedOverList");
-			return;
-		}
-		
-		//dont do anything if didnt drag to a different list
-		if( draggedFromList.id == draggedOverList.id ){
-			console.log("handleDraggedOverTodo - dragged over same list");
-			return;
-		}
-		
-		if( !draggedOverList ) return;
-		
-		const draggedOverIndex = getIndexOfTodo( draggedOverList.todos , draggedOverTodo );
-		
-		handleDraggedOverAnotherList( draggedFromList , draggedOverList , draggedTodo , draggedOverIndex )
-	}
+
 	function handleDraggedOverList( draggedTodo:Todo , draggedOverList:DraggableList ){
 		
 		console.log( "handleDraggedOverList: " + draggedOverList.title );
@@ -131,11 +96,15 @@ export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 			return;
 		}
 		
+		setDraggedOverList( draggedOverList );
+		
 		handleDraggedOverAnotherList( draggedFromList , draggedOverList , draggedTodo , draggedOverIndex )
 	}
 	
 	function handleDragEnd({ active, over }: DragEndEvent){
 		console.log( { DragEndEvent: { active, over } } );
+		
+		setDraggedOverList( null );
 		
 		if( !over ){
 			console.log("handleDragEnd - no over");
@@ -227,10 +196,6 @@ export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 		setDraggableLists( newState );
 	}
 	
-	function getIndexOfTodo( list:Todo[] , todoSearched:Todo ){
-		return list.findIndex( todo => todo.id === todoSearched.id );
-	}
-	
 	function removeFromList( draggableList:DraggableList , todoToRemove:Todo ): DraggableList {
 		draggableList.todos = draggableList.todos.filter( todo => todo.id != todoToRemove.id );
 		return draggableList;
@@ -244,9 +209,12 @@ export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 		return draggableList;
 	}
 	
+	const dropAnimation: DropAnimation = {
+		...defaultDropAnimation,
+	};
 	
 	return (
-		<div className="draggable-todo-board">
+		<div className="draggable-sortable-todo-board">
 			
 			<DndContext
 				sensors={sensors}
@@ -259,6 +227,7 @@ export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 				{ draggableLists.map( draggableList => 
 					<DraggableTodoList key={draggableList.id}
 						draggableList={draggableList}
+						hovered={ draggedOverList?.id == draggableList.id }
 						doneChanged={doneChanged}
 						titleChanged={titleChanged}
 						dateChanged={dateChanged}
@@ -266,12 +235,14 @@ export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 					/>
 				) }
 				
-				{ activeTodo &&
-					<DragOverlay /*dropAnimation={dropAnimation}*/  >
-						<TodoItem todo={activeTodo} pickedUp />
-					</DragOverlay>
-				}
-				
+				<DragOverlay 
+					dropAnimation={dropAnimation}
+					modifiers={[restrictToWindowEdges]}
+					>
+					{ draggedTodo &&
+						<TodoItem todo={draggedTodo} pickedUp />
+					}
+				</DragOverlay>
 				
 			</DndContext>
 			

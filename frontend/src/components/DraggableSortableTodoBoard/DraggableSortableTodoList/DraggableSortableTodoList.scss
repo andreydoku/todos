@@ -1,0 +1,48 @@
+.draggable-sortable-todo-list{
+	
+	//width: 400px;
+	//background-color: gray;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto 1fr;
+	
+	transition: all ease-in-out 0.2s;
+	background-color: rgba(255, 255, 255, 5%);
+	border-radius: 3px;
+    padding: 5px;
+	
+	.title{
+		//padding: 0 10px;
+		text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+		margin-bottom: 10px;
+	}
+	
+	.draggable-area{
+		
+		//background-color: antiquewhite;
+		height: 100%;
+		transition: all ease-in-out 0.2s;
+		border-radius: 5px;
+		
+		.list-area{
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 8px;
+			
+			//padding: 10px;
+			
+			
+		}
+	}
+	
+	&.hovered{
+		// .draggable-area{ 
+		// 	background-color: rgba(240, 248, 255, 0.1);
+		// }
+		background-color: rgba(240, 248, 255, 0.1);
+	}
+	
+	
+	
+    
+}

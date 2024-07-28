@@ -18,7 +18,8 @@ export class TodosRestClient {
 			});
 
 			if (!response.ok) {
-				throw new Error(`Response status: ${response.status}`);
+				const json = await response.json();
+				throw new Error( `${response.status}: ${JSON.stringify(json)}` );
 			}
 
 			const json = await response.json();
@@ -50,7 +51,8 @@ export class TodosRestClient {
 			});
 
 			if (!response.ok) {
-				throw new Error(`Response status: ${response.status}`);
+				const json = await response.json();
+				throw new Error( `${response.status}: ${JSON.stringify(json)}` );
 			}
 
 			const json = await response.json();
@@ -105,7 +107,8 @@ export class TodosRestClient {
 			});
 
 			if (!response.ok) {
-				throw new Error(`Response status: ${response.status}`);
+				const json = await response.json();
+				throw new Error( `${response.status}: ${JSON.stringify(json)}` );
 			}
 
 			const json = await response.json();
@@ -134,8 +137,8 @@ export class TodosRestClient {
 			});
 
 			if (!response.ok) {
-				console.error( response )
-				throw new Error(`Response status: ${response.status}`);
+				const json = await response.json();
+				throw new Error( `${response.status}: ${JSON.stringify(json)}` );
 			}
 
 			const json = await response.json();

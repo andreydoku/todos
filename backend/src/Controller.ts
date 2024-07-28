@@ -69,17 +69,18 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	}
 	
 	const requestBody = JSON.parse(event.body);
-	const todo:Todo = requestBody as Todo;
 	
-	const error = validateRequestForCreateTodo( todo );
-	if( error ){
+	const validationError = validateTodoUpdateRequest(requestBody);
+	if( validationError ){
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
-				message: error,
+				message: validationError,
 			})
 		};
 	}
+	
+	const todo:Todo = requestBody as Todo;
 	
 	
 	try {
@@ -106,32 +107,6 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 			})
 		};
 	}
-	
-}
-export function validateRequestForCreateTodo(todo: Todo): string|null{
-	
-	if( todo.title == null || todo.title == undefined ){
-		return "missing title";
-	}
-	
-	if( todo.title.trim() === "" ){
-		return "title cannot be blank";
-	}
-	
-	
-	if( todo.title == null || todo.title == undefined ){
-		return "missing title";
-	}
-	
-	if( todo.doDate != undefined && todo.doDate.trim() === "" ){
-		return "date cannot be blank";
-	}
-	
-	const dateError = validateDate( todo.doDate );
-	if( dateError )  return dateError;
-	
-	
-	return null;
 	
 }
 
@@ -162,6 +137,7 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	}
 	
 	const requestBody = JSON.parse(event.body);
+	
 	const validationError = validateTodoUpdateRequest(requestBody);
 	if( validationError ){
 		return {

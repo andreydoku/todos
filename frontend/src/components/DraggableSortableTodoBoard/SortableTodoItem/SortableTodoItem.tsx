@@ -2,14 +2,14 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 
 import { Todo } from "../../../models/Todo";
-
-
-import TodoItem from "../../../components/TodoItem/TodoItem";
+import TodoItem from "../../TodoItem/TodoItem";
 
 import "./SortableTodoItem.scss";
 
+
 type SortableTodoItemProps = {
 	todo: Todo
+	
 	doneChanged: ( id:string , newDone:boolean ) => void
 	titleChanged: ( id:string , newTitle:string ) => void
 	dateChanged: ( id:string , newDate:string|null ) => void
@@ -17,14 +17,13 @@ type SortableTodoItemProps = {
 };
 
 export default function SortableTodoItem({ todo , doneChanged , titleChanged , dateChanged , deleteClicked }: SortableTodoItemProps) {
-	const {
-		attributes,
-		listeners,
-		setNodeRef,
-		transform,
-		transition,
-		isDragging,
-	} = useSortable({ id: todo.id, data:{ type: "Todo" , value: todo } });
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+		id: todo.id, 
+		data:{ 
+			type: "Todo", 
+			value: todo 
+		} 
+	});
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
@@ -43,9 +42,6 @@ export default function SortableTodoItem({ todo , doneChanged , titleChanged , d
 				dateChanged={dateChanged}
 				deleteClicked={deleteClicked}
 			/>
-			
-			{/* <SampleTodoItem todo={todo} /> */}
-			
 		</div>
 	);
 };

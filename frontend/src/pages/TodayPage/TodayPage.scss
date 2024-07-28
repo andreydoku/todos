@@ -3,8 +3,9 @@
 	.title{
 		
 	}
-	.draggable-todo-board{
+	.draggable-sortable-todo-board{
 		height: 600px;
+		grid-template-columns: 400px 400px;
 	}
 	
 }

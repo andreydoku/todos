@@ -1,5 +1,6 @@
-import { log } from "console";
-import { validateTodoUpdateRequest } from "../src/TodoUpdateRequest";
+
+
+import { validateTodoUpdateRequest } from "../src/Validator";
 
 
 
@@ -10,6 +11,6 @@ const requestBody = {
 
 
 const result = validateTodoUpdateRequest( requestBody );
-log( result )
+console.log( result )
 
 //npx ts-node tests/TodoUpdateRequestTest.ts

@@ -1,0 +1,13 @@
+.draggable-todo-item{
+	
+	//transition: opacity ease-in-out 0.2s;
+	opacity: 1;
+	cursor: grab;
+	
+	
+	&.picked-up{
+		cursor: grabbing;
+		opacity: 0.2;
+	}
+	
+}

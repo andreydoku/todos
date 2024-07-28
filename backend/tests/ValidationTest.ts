@@ -1,6 +1,6 @@
 import { validateRequestForCreateTodo } from "../src/Controller";
 import { Todo } from "../src/Todo";
-import { validateDate } from "../src/Validator";
+import { validateCreateRequest, validateDate } from "../src/Validator";
 
 
 
@@ -36,8 +36,11 @@ function test4(){
 
 function blah(){
 	
-	let doDate = "05/26/1989";
-	validateDate(doDate);
+	const createRequest = {
+		done: true
+	}
+	const error = validateCreateRequest( createRequest );
+	console.log("error: " + error )
 }
 blah();
 
@@ -47,4 +50,6 @@ blah();
 
 
 
-//npx ts-node tests/ValidationTest.ts
+/*
+npx ts-node tests/ValidationTest.ts
+*/

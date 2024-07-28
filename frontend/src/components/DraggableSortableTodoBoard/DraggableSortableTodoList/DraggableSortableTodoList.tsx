@@ -1,27 +1,29 @@
 import { useDroppable } from "@dnd-kit/core";
-import { Todo } from "../../../models/Todo";
+
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import SortableTodoItem from "../SortableTodoItem/SortableTodoItem";
 
-import "./DraggableTodoList.scss";
-import { DraggableList } from "../DraggableTodoBoard/DraggableTodoBoard";
+import "./DraggableSortableTodoList.scss";
+import { DraggableSortableList } from "../DraggableSortableTodoBoard";
+import { Todo } from "../../../models/Todo";
 
-type DraggableTodoListProps = {
-	draggableList: DraggableList
+type DraggableSortableTodoListProps = {
+	draggableList: DraggableSortableList
+	hovered?: boolean
 	
 	doneChanged?: ( id:string , newDone:boolean ) => void
 	titleChanged?: ( id:string , newTitle:string ) => void
 	dateChanged?: ( id:string , newDate:string|null ) => void
 	deleteClicked?: ( id:string ) => void
 }
-export default function DraggableTodoList({ draggableList , doneChanged , titleChanged , dateChanged , deleteClicked }: DraggableTodoListProps){
+export default function DraggableSortableTodoList({ draggableList , hovered=false, doneChanged , titleChanged , dateChanged , deleteClicked }: DraggableSortableTodoListProps){
 	
-	const { isOver, setNodeRef } = useDroppable({
+	const { setNodeRef } = useDroppable({
 		id: draggableList.id,
 		data: { type: "DraggableList" , value: draggableList }
 	});
 	
-	const{ title , todos } = draggableList;
+	const{ title , todos , className } = draggableList;
 	
 	if( !doneChanged) doneChanged = ()=>{}
 	if( !titleChanged) titleChanged = ()=>{}
@@ -29,8 +31,9 @@ export default function DraggableTodoList({ draggableList , doneChanged , titleC
 	if( !deleteClicked) deleteClicked = ()=>{}
 	
 	
-	let cn = "draggable-todo-list";
-	if( isOver ) cn += " is-over";
+	let cn = "draggable-sortable-todo-list";
+	if( hovered ) cn += " hovered";
+	if( className ) cn += " " + className;
 	
 	return( 
 		<div className={cn} >
