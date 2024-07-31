@@ -4,7 +4,6 @@ import { defaultDropAnimation, DndContext, DragEndEvent, DragOverEvent, DragOver
 import { restrictToWindowEdges} from '@dnd-kit/modifiers';
 
 
-import { TodosState } from "../../main";
 import { Todo } from "../../models/Todo";
 import TodoItem from "../TodoItem/TodoItem";
 import DraggableSortableTodoList from "./DraggableSortableTodoList/DraggableSortableTodoList";
@@ -15,7 +14,6 @@ import "./DraggableSortableTodoBoard.scss";
 type DraggableSortableTodoBoardProps = {
 	draggableLists: DraggableSortableList[],
 	droppedOnList: (todoId:string , listId:string , index:number) => void;
-	todosState: TodosState
 }
 export type DraggableSortableList = {
 	id: string
@@ -31,11 +29,6 @@ export default function DraggableSortableTodoBoard(props: DraggableSortableTodoB
 	
 	const [draggedOverList, setDraggedOverList] = useState<DraggableSortableList|null>( null );
 	
-	
-	const { doneChanged , titleChanged , dateChanged , deleteClicked } = props.todosState;
-	if( !doneChanged ){
-		console.error("DraggableTodoBoard: doneChanged not set!");
-	}
 	
 	useEffect(() => {
 		setDraggableLists( [...props.draggableLists] );
@@ -274,19 +267,10 @@ export default function DraggableSortableTodoBoard(props: DraggableSortableTodoB
 					<DraggableSortableTodoList key={draggableList.id}
 						draggableList={draggableList}
 						hovered={ draggedOverList?.id == draggableList.id }
-						doneChanged={doneChanged}
-						titleChanged={titleChanged}
-						dateChanged={dateChanged}
-						deleteClicked={deleteClicked}
 						addTaskClicked={ () => draggableList.addTaskClicked() }
 					/>
 				) }
 				
-				{/* { draggedTodo &&
-					<DragOverlay dropAnimation={dropAnimation}  >
-						<TodoItem todo={draggedTodo} pickedUp />
-					</DragOverlay>
-				} */}
 				
 				<DragOverlay 
 					dropAnimation={dropAnimation}

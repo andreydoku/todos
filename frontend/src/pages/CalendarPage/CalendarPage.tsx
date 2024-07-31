@@ -1,17 +1,17 @@
 import dayjs, { Dayjs } from "dayjs";
-import { TodosState } from "../../main";
 
 import { getMondayOf, isToday } from "../../utils/utils";
 import DraggableSortableTodoBoard from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
+import { DraggableSortableList } from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
+import { useTodos } from "../../providers/TodoProvider";
 
 
 import "./CalendarPage.scss";
-import { DraggableSortableList } from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
 
 
-export default function CalendarPage({ todosState }: {todosState:TodosState}) {
+export default function CalendarPage() {
 	
-	const { todos , dateChanged , addTask } = todosState;
+	const { todos , dateChanged , addTask } = useTodos();
 	
 	const title = "Calendar";
 	
@@ -82,7 +82,6 @@ export default function CalendarPage({ todosState }: {todosState:TodosState}) {
 			<DraggableSortableTodoBoard 
 				draggableLists={draggableLists}
 				droppedOnList={droppedOnList}
-				todosState={todosState}
 			/>
 			
 		</div>

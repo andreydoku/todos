@@ -1,16 +1,14 @@
-
-
 import TodoList from "../../components/TodoList/TodoList";
 import AddTaskButton from "../../components/AddTaskButton/AddTaskButton";
-import { TodosState } from "../../main";
+import { useTodos } from "../../providers/TodoProvider";
 
 import "./AllPage.scss";
 
-export default function AllPage({ todosState }: {todosState:TodosState}) {
+export default function AllPage() {
 	
 	const title = "All Tasks";
 	
-	const { todos , doneChanged , titleChanged , dateChanged , deleteClicked , addTask } = todosState;
+	const { todos , addTask } = useTodos();
 	
 	return (
 		<div className="all-page">
@@ -20,12 +18,7 @@ export default function AllPage({ todosState }: {todosState:TodosState}) {
 			
 			<TodoList 
 				todos={todos} 
-				doneChanged={ (id,newDone)=>doneChanged(id,newDone) }
-				titleChanged={ (id,newTitle) => titleChanged(id,newTitle) }
-				dateChanged={ (id,newDate) => dateChanged(id,newDate) }
-				deleteClicked={ (id) => deleteClicked(id) }
 			/>
-			
 		</div>
 	)
 }

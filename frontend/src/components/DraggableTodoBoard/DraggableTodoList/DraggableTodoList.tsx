@@ -11,13 +11,8 @@ type DraggableTodoListProps = {
 	draggableList: DraggableList
 	className?: string
 	hovered?: boolean
-	
-	doneChanged?: ( id:string , newDone:boolean ) => void
-	titleChanged?: ( id:string , newTitle:string ) => void
-	dateChanged?: ( id:string , newDate:string|null ) => void
-	deleteClicked?: ( id:string ) => void
 }
-export default function DraggableTodoList({ draggableList , hovered=false, doneChanged , titleChanged , dateChanged , deleteClicked }: DraggableTodoListProps){
+export default function DraggableTodoList({ draggableList , hovered=false }: DraggableTodoListProps){
 	
 	const { setNodeRef } = useDroppable({
 		id: draggableList.id,
@@ -25,12 +20,6 @@ export default function DraggableTodoList({ draggableList , hovered=false, doneC
 	});
 	
 	const{ title , todos , className } = draggableList;
-	
-	if( !doneChanged) doneChanged = ()=>{}
-	if( !titleChanged) titleChanged = ()=>{}
-	if( !dateChanged) dateChanged = ()=>{}
-	if( !deleteClicked) deleteClicked = ()=>{}
-	
 	
 	let cn = "draggable-todo-list";
 	if( hovered ) cn += " hovered";
@@ -45,13 +34,7 @@ export default function DraggableTodoList({ draggableList , hovered=false, doneC
 				<div className="list-area" ref={setNodeRef} >
 				
 					{ todos.map( (todo:Todo) => 
-						<DraggableTodoItem key={todo.id} 
-							todo={todo} 
-							doneChanged={doneChanged}
-							titleChanged={titleChanged}
-							dateChanged={dateChanged}
-							deleteClicked={deleteClicked}
-						/>
+						<DraggableTodoItem key={todo.id} todo={todo} />
 					) }
 				
 				</div>

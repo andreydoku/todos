@@ -1,23 +1,22 @@
 
 
 import dayjs, { Dayjs } from "dayjs";
-import { TodosState } from "../../main";
 import { Todo } from "../../models/Todo";
 import { datejsToString } from "../../utils/utils";
 import DraggableSortableTodoBoard from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
+import { useTodos } from "../../providers/TodoProvider";
 
 import "./TodayPage.scss";
 
-
-export default function TodayPage({ todosState }: {todosState:TodosState}) {
+export default function TodayPage() {
 	
 	const todayDate:Dayjs = dayjs();
 	const todayDateString = todayDate.format('YYYY-MM-DD');
 	
 	const title = todayDate.format('MMM D, YYYY');
 	
-	//const { todos , doneChanged , titleChanged , dateChanged , deleteClicked , addTask } = todosState;
-	const { todos , dateChanged , addTask } = todosState;
+	const { todos , dateChanged , addTask } = useTodos();
+	
 	
 	
 	const todaysTodos:Todo[] = todos.filter( todo => todo.doDate == todayDateString )
@@ -61,7 +60,6 @@ export default function TodayPage({ todosState }: {todosState:TodosState}) {
 					}
 				]}
 				droppedOnList={droppedOnList}
-				todosState={todosState}
 			/>
 			
 

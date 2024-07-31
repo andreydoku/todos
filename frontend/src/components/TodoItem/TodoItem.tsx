@@ -6,31 +6,23 @@ import ButtonDatePicker from '../ButtonDatePicker/ButtonDatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { datejsToString, stringToDatejs } from '../../utils/utils';
+import { useTodos } from '../../providers/TodoProvider';
 
 import './TodoItem.scss';
 
 type TodoItemProps = {
 	todo: Todo
 	pickedUp?: boolean
-	
-	doneChanged?: ( id:string , newDone:boolean ) => void
-	titleChanged?: ( id:string , newTitle:string ) => void
-	dateChanged?: ( id:string , newDate:string|null ) => void
-	deleteClicked?: ( id:string ) => void
 }
-function TodoItem({ todo , pickedUp=false, doneChanged , titleChanged , dateChanged , deleteClicked }: TodoItemProps){
+
+function TodoItem({ todo , pickedUp=false }: TodoItemProps){
 	
 	let cn = "todo-item";
 	if( todo.done ) cn += " done";
 	if( pickedUp ) cn += " picked-up";
 	
-	
-	if( !doneChanged) doneChanged = ()=>{}
-	if( !titleChanged) titleChanged = ()=>{}
-	if( !dateChanged) dateChanged = ()=>{}
-	if( !deleteClicked) deleteClicked = ()=>{}
-	
-	
+	const { doneChanged , titleChanged , dateChanged , deleteClicked } = useTodos()
+
 	return(
 		
 		<div className={cn}>

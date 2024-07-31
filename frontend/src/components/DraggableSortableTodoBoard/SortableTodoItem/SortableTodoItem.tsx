@@ -9,14 +9,9 @@ import "./SortableTodoItem.scss";
 
 type SortableTodoItemProps = {
 	todo: Todo
-	
-	doneChanged: ( id:string , newDone:boolean ) => void
-	titleChanged: ( id:string , newTitle:string ) => void
-	dateChanged: ( id:string , newDate:string|null ) => void
-	deleteClicked: ( id:string ) => void
 };
 
-export default function SortableTodoItem({ todo , doneChanged , titleChanged , dateChanged , deleteClicked }: SortableTodoItemProps) {
+export default function SortableTodoItem({ todo }: SortableTodoItemProps) {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
 		id: todo.id, 
 		data:{ 
@@ -36,12 +31,7 @@ export default function SortableTodoItem({ todo , doneChanged , titleChanged , d
 	
 	return (
 		<div ref={setNodeRef} className={cn} style={style} {...attributes} {...listeners}>
-			<TodoItem todo={todo} 
-				doneChanged={doneChanged}
-				titleChanged={titleChanged}
-				dateChanged={dateChanged}
-				deleteClicked={deleteClicked}
-			/>
+			<TodoItem todo={todo} />
 		</div>
 	);
 };

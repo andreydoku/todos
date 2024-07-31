@@ -3,6 +3,7 @@ import './AddTaskButton.scss';
 type AddTaskButtonProps = {
 	onClick: () => void
 }
+
 function AddTaskButton({ onClick }: AddTaskButtonProps){
 	
 	if( onClick === undefined ) onClick = () => {};
@@ -16,4 +17,5 @@ function AddTaskButton({ onClick }: AddTaskButtonProps){
 	);
 	
 }
+
 export default AddTaskButton;

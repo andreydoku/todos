@@ -3,20 +3,15 @@ import { useEffect, useState } from "react";
 import { defaultDropAnimation, DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, DropAnimation, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { restrictToWindowEdges} from '@dnd-kit/modifiers';
 
-
-import { TodosState } from "../../main";
 import { Todo } from "../../models/Todo";
 import TodoItem from "../TodoItem/TodoItem";
-
-
-import "./DraggableTodoBoard.scss";
 import DraggableTodoList from "./DraggableTodoList/DraggableTodoList";
 
+import "./DraggableTodoBoard.scss";
   
 type DraggableTodoBoardProps = {
 	draggableLists: DraggableList[],
 	droppedOnList: (todoId:string , listId:string , index:number) => void;
-	todosState: TodosState
 }
 export type DraggableList = {
 	id: string
@@ -30,12 +25,6 @@ export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 	const [draggedTodo, setDraggedTodo] = useState<Todo|null>( null );
 	
 	const [draggedOverList, setDraggedOverList] = useState<DraggableList|null>( null );
-	
-	
-	const { doneChanged , titleChanged , dateChanged , deleteClicked } = props.todosState;
-	if( !doneChanged ){
-		console.error("DraggableTodoBoard: doneChanged not set!");
-	}
 	
 	useEffect(() => {
 		setDraggableLists( [...props.draggableLists] );
@@ -228,10 +217,6 @@ export default function DraggableTodoBoard(props: DraggableTodoBoardProps) {
 					<DraggableTodoList key={draggableList.id}
 						draggableList={draggableList}
 						hovered={ draggedOverList?.id == draggableList.id }
-						doneChanged={doneChanged}
-						titleChanged={titleChanged}
-						dateChanged={dateChanged}
-						deleteClicked={deleteClicked}
 					/>
 				) }
 				

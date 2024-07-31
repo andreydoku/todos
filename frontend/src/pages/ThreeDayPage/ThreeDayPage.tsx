@@ -1,15 +1,15 @@
 import dayjs, { Dayjs } from "dayjs";
-import { TodosState } from "../../main";
 import { Todo } from "../../models/Todo";
 import { datejsToString } from "../../utils/utils";
 import DraggableSortableTodoBoard from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
+import { useTodos } from "../../providers/TodoProvider";
 
 import "./ThreeDayPage.scss";
 
 
-export default function ThreeDayPage({ todosState }: {todosState:TodosState}) {
+export default function ThreeDayPage() {
 	
-	const { todos , dateChanged , addTask } = todosState;
+	const { todos , dateChanged , addTask } = useTodos();
 	
 	const title = "3-Day View";
 	
@@ -71,7 +71,6 @@ export default function ThreeDayPage({ todosState }: {todosState:TodosState}) {
 					}
 				]}
 				droppedOnList={droppedOnList}
-				todosState={todosState}
 			/>
 			
 		</div>
