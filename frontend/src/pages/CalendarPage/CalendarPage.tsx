@@ -6,12 +6,12 @@ import DraggableSortableTodoBoard from "../../components/DraggableSortableTodoBo
 
 
 import "./CalendarPage.scss";
-import { DraggableList } from "../../components/DraggableTodoBoard/DraggableTodoBoard";
+import { DraggableSortableList } from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
 
 
 export default function CalendarPage({ todosState }: {todosState:TodosState}) {
 	
-	const { todos , dateChanged } = todosState;
+	const { todos , dateChanged , addTask } = todosState;
 	
 	const title = "Calendar";
 	
@@ -22,19 +22,27 @@ export default function CalendarPage({ todosState }: {todosState:TodosState}) {
 	//for( let i = 0; )
 	
 	const days = Array.from({ length: 7*3 }, (_, i) => thisMonday.add(i, "days"));
-	const draggableLists:DraggableList[] = days.map( (day:Dayjs) => 
+	const draggableLists:DraggableSortableList[] = days.map( (day:Dayjs) => 
 		{
 			const dayString = day.format('YYYY-MM-DD');
-			const draggableList:DraggableList = {
+			const draggableList:DraggableSortableList = {
 				id: dayString,
 				title: getDayLabel(day),
 				todos: todos.filter( todo => todo.doDate == dayString ),
+				addTaskClicked: () => addTask("new task" , dayString ),
 				className: isToday(day) ? "today" : "",
 			}
 			return draggableList;
 			
 		}
 	);
+	draggableLists.push( {
+		id: "backlog",
+		title: "",
+		todos: todos.filter( todo => !todo.doDate && !todo.done ),
+		addTaskClicked: () => addTask( "new task" ),
+		className: "backlog",
+	} )
 	
 	function getDayLabel( date:Dayjs ){
 		
@@ -55,6 +63,11 @@ export default function CalendarPage({ todosState }: {todosState:TodosState}) {
 	function droppedOnList( todoId:string , listId:string , index:number ){
 		
 		console.log("droppedOnList: " + listId + ", " + index + ", " + "todoId");
+		
+		if( listId == "backlog" ){
+			dateChanged(todoId , null );
+		}
+		
 		dateChanged(todoId , listId );
 		
 	}
@@ -79,13 +92,14 @@ export default function CalendarPage({ todosState }: {todosState:TodosState}) {
 function WeekdayHeaders(){
 	
 	//const weekdays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-	const weekdays = ['Mon','Tue','Wed','Thur','Fri','Sat','Sun'];
+	//const headers = ['Mon','Tue','Wed','Thur','Fri','Sat','Sun', 'Backlog'];
+	const headers = ['Backlog' , 'Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 	
 	return(
 		<div className="weekday-headers">
-			{ weekdays.map( weekday =>
-				<h2 className="weekday-header">
-					{weekday}
+			{ headers.map( header =>
+				<h2 className={"weekday-header" + (header=="Backlog"?" backlog": "") }>
+					{header}
 				</h2>
 			)}
 		</div>

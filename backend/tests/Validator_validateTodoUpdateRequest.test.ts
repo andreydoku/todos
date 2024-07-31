@@ -1,8 +1,8 @@
 
-import { describe, expect, test } from '@jest/globals';
-import { validateDate, validateTodoUpdateRequest } from '../src/Validator';
+import { expect, test } from '@jest/globals';
+import { validateTodoUpdateRequest } from '../src/Validator';
 
-
+//npm test -- Validator.test.ts
 
 
 test( "good object, without doDate" , () => {
@@ -68,7 +68,7 @@ test( "bad object - extra fields" , () => {
 		someOtherBullshit: "wtf is this"
 	}
 	
-	const expected = "field someBullshit is not allowed";
+	const expected = "field 'someBullshit' is not allowed";
 	const result = validateTodoUpdateRequest( request );
 	console.log( result );
 	
@@ -84,7 +84,7 @@ test( "title - wrong type" , () => {
 		title: 1,
 	}
 	
-	const expected = "field title is wrong type!  input: number,  required: string";
+	const expected = "field 'title' is wrong type!  input: number,  required: string";
 	const result = validateTodoUpdateRequest( request );
 	console.log( result );
 	
@@ -97,7 +97,7 @@ test( "title - null" , () => {
 		title: null,
 	}
 	
-	const expected = "field title is null, which is not allowed";
+	const expected = "field 'title' is null, which is not allowed";
 	const result = validateTodoUpdateRequest( request );
 	console.log( result );
 	
@@ -110,7 +110,7 @@ test( "title - empty string" , () => {
 		title: "",
 	}
 	
-	const expected = "field title can't be blank";
+	const expected = "field 'title' is empty string, which is not allowed";
 	const result = validateTodoUpdateRequest( request );
 	console.log( result );
 	
@@ -123,7 +123,7 @@ test( "title - spaces" , () => {
 		title: "   ",
 	}
 	
-	const expected = "field title can't be blank";
+	const expected = "field 'title' is empty string, which is not allowed";
 	const result = validateTodoUpdateRequest( request );
 	console.log( result );
 	
@@ -151,7 +151,7 @@ test( "done - used isDone instead" , () => {
 		isDone: false
 	}
 	
-	const expected = "field isDone is not allowed";
+	const expected = "field 'isDone' is not allowed";
 	const result = validateTodoUpdateRequest( request );
 	console.log( result );
 	
@@ -164,7 +164,7 @@ test( "done - wrong type" , () => {
 		done: 1,
 	}
 	
-	const expected = "field done is wrong type!  input: number,  required: boolean";
+	const expected = "field 'done' is wrong type!  input: number,  required: boolean";
 	const result = validateTodoUpdateRequest( request );
 	console.log( result );
 	
@@ -180,7 +180,7 @@ test( "doDate - used date instead" , () => {
 		date: "2024-05-26"
 	}
 	
-	const expected = "field date is not allowed";
+	const expected = "field 'date' is not allowed";
 	const result = validateTodoUpdateRequest( request );
 	console.log( result );
 	
@@ -206,7 +206,7 @@ test( "doDate - YYYY/MM/DD" , () => {
 		doDate: "2024/05/26"
 	}
 	
-	const expected = "doDate invalid date format";
+	const expected = "field 'doDate' is invalid date format";
 	const result = validateTodoUpdateRequest( request );
 	console.log( result );
 	
@@ -219,7 +219,7 @@ test( "doDate - MM/DD/YYYY" , () => {
 		doDate: "05/26/1989"
 	}
 	
-	const expected = "doDate invalid date format";
+	const expected = "field 'doDate' is invalid date format";
 	const result = validateTodoUpdateRequest( request );
 	console.log({ request , expected , result });
 	
@@ -232,7 +232,7 @@ test( "doDate - invalid string" , () => {
 		doDate: "what the fuck"
 	}
 	
-	const expected = "doDate invalid date format";
+	const expected = "field 'doDate' is invalid date format";
 	const result = validateTodoUpdateRequest( request );
 	console.log({ request , expected , result });
 	
@@ -245,7 +245,7 @@ test( "doDate - 2024-99-99" , () => {
 		doDate: "2024-99-99"
 	}
 	
-	const expected = "doDate invalid date format";
+	const expected = "field 'doDate' is invalid date format";
 	const result = validateTodoUpdateRequest( request );
 	console.log({ request , expected , result });
 	

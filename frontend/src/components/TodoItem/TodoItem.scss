@@ -12,9 +12,9 @@
 	padding: 10px 15px;
 	
 	display: grid;
-	grid-template-columns: auto 1fr 73px auto;
+	grid-template-columns: auto 1fr 74px 28px;
 	align-items: center;
-	gap: 15px;
+	gap: 5px;
 	
 	scale: 1;
 	transition: 0.2s ease;
@@ -92,15 +92,18 @@
 		text-align: center;
 		user-select: none;
 
-		padding: 6px 5px 4px 5px;
+		//padding: 6px 5px 4px 5px;
 		
 		//padding-top: 4px;
 		border: 1px solid transparent;
 		border-radius: 4px;
 		cursor: pointer;
 		
-		vertical-align: middle;
-		width: 27px;
+		width: 28px;
+		height: 28px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		
 		&:hover{
 			background-color: #f5f5f5;

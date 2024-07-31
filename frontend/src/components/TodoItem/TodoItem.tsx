@@ -1,5 +1,5 @@
 import { FaTrash , FaRegSquare , FaCheckSquare } from 'react-icons/fa';
-import { useState , useEffect } from 'react';
+import { useState , useEffect, useRef } from 'react';
 import { Todo } from '../../models/Todo';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import ButtonDatePicker from '../ButtonDatePicker/ButtonDatePicker';
@@ -101,6 +101,8 @@ type TitleFieldProps = {
 }
 function TitleField({ title , onTitleChange }: TitleFieldProps){
 	
+	const inputRef = useRef(null);
+	
 	const [ text , setText ] = useState( title );
 	useEffect( () => {
 		
@@ -123,6 +125,9 @@ function TitleField({ title , onTitleChange }: TitleFieldProps){
 		setText( e.target.value );
 		
 	}
+	function handleFocusGained(e: any){
+		e.target.select()
+	}
 	function handleFocusLost(e: any){
 		
 		console.log({ handleFocusLost: e });
@@ -138,10 +143,11 @@ function TitleField({ title , onTitleChange }: TitleFieldProps){
 		
 		<form onSubmit={ (e) => handleSubmit(e) }>
 			
-			<input 
+			<input ref={inputRef}
 				type="text" 
 				value={text} 
 				onChange={ (e) => handleTextChange(e) }
+				onFocus={ (e) => handleFocusGained(e) }
 				onBlur={ (e) => handleFocusLost(e) }
 				className="title-field"
 			/>

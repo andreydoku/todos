@@ -103,13 +103,14 @@ export default function App() {
 		
 	}
 	
-	async function addTaskClicked(){
+	async function addTask( title:string , doDate?:string){
 		
 		console.log( "add task clicked" );
 		
 		const newTodo = {
-			title: "new task",
-			done: false
+			title: title,
+			done: false,
+			doDate: doDate
 		} as Todo;
 		
 		const addedTodo = await todosRestClient.addTodo( newTodo );
@@ -123,7 +124,7 @@ export default function App() {
 	}
 	
 	
-	const todosState:TodosState = { todos, doneChanged , titleChanged , dateChanged , deleteClicked , addTaskClicked };
+	const todosState:TodosState = { todos, doneChanged , titleChanged , dateChanged , deleteClicked , addTask };
 	
 	
 	return (
@@ -153,7 +154,7 @@ export type TodosState = {
 	titleChanged: ( id:string , newTitle:string ) => Promise<void>;
 	dateChanged: ( id:string , newDate:string|null ) => Promise<void>;
 	deleteClicked: ( id:string ) => Promise<void>;
-	addTaskClicked: () => Promise<void>;
+	addTask: (title:string, doDate?:string) => Promise<void>;
 }
 
 

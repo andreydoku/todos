@@ -12,14 +12,15 @@ import "./TodayPage.scss";
 export default function TodayPage({ todosState }: {todosState:TodosState}) {
 	
 	const todayDate:Dayjs = dayjs();
+	const todayDateString = todayDate.format('YYYY-MM-DD');
 	
 	const title = todayDate.format('MMM D, YYYY');
 	
-	//const { todos , doneChanged , titleChanged , dateChanged , deleteClicked , addTaskClicked } = todosState;
-	const { todos , dateChanged } = todosState;
+	//const { todos , doneChanged , titleChanged , dateChanged , deleteClicked , addTask } = todosState;
+	const { todos , dateChanged , addTask } = todosState;
 	
 	
-	const todaysTodos:Todo[] = todos.filter( todo => todo.doDate == todayDate.format('YYYY-MM-DD') )
+	const todaysTodos:Todo[] = todos.filter( todo => todo.doDate == todayDateString )
 	const backlogTodos:Todo[] = todos.filter( todo => !todo.doDate && !todo.done );
 	
 	//console.log({ todos , todaysTodos , backlogTodos });
@@ -38,7 +39,7 @@ export default function TodayPage({ todosState }: {todosState:TodosState}) {
 		dateChanged(todoId , datejsToString( newDate ) );
 		
 	}
-
+	
 	
 	return (
 		<div className="today-page">
@@ -49,12 +50,14 @@ export default function TodayPage({ todosState }: {todosState:TodosState}) {
 					{
 						id: "today",
 						title: "Today",
-						todos: todaysTodos
+						todos: todaysTodos,
+						addTaskClicked: () => addTask( "new task" , todayDateString ),
 					},
 					{
 						id: "backlog",
 						title: "Backlog",
-						todos: backlogTodos
+						todos: backlogTodos,
+						addTaskClicked: () => addTask( "new task" ),
 					}
 				]}
 				droppedOnList={droppedOnList}

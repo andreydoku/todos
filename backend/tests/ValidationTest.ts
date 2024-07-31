@@ -1,4 +1,4 @@
-import { validateRequestForCreateTodo } from "../src/Controller";
+
 import { Todo } from "../src/Todo";
 import { validateCreateRequest, validateDate } from "../src/Validator";
 
@@ -7,7 +7,7 @@ import { validateCreateRequest, validateDate } from "../src/Validator";
 function test1(){
 	
 	const todo:Todo = {id:"1", title:"blah", done: false, doDate:"2019-05-03"};
-	const error = validateRequestForCreateTodo(todo);
+	const error = validateCreateRequest(todo);
 	
 	console.log( error );
 	
@@ -15,19 +15,19 @@ function test1(){
 }
 function test2(){
 	const todo:Todo = {id:"1", title:"blah", done: false, doDate:"wtf is this"};
-	const error = validateRequestForCreateTodo(todo);
+	const error = validateCreateRequest(todo);
 	
 	console.log( error );
 }
 function test3(){
 	const todo:Todo = {id:"1", title:"blah", done: false, doDate:"2019/05/03"};
-	const error = validateRequestForCreateTodo(todo);
+	const error = validateCreateRequest(todo);
 	
 	console.log( error );
 }
 function test4(){
 	const todo:Todo = {id:"1", title:"blah", done: false, doDate:"05-03-2024"};
-	const error = validateRequestForCreateTodo(todo);
+	const error = validateCreateRequest(todo);
 	
 	console.log( error );
 }

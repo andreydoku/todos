@@ -15,8 +15,9 @@ type DraggableSortableTodoListProps = {
 	titleChanged?: ( id:string , newTitle:string ) => void
 	dateChanged?: ( id:string , newDate:string|null ) => void
 	deleteClicked?: ( id:string ) => void
+	addTaskClicked: () => void
 }
-export default function DraggableSortableTodoList({ draggableList , hovered=false, doneChanged , titleChanged , dateChanged , deleteClicked }: DraggableSortableTodoListProps){
+export default function DraggableSortableTodoList({ draggableList , hovered=false, doneChanged , titleChanged , dateChanged , deleteClicked , addTaskClicked }: DraggableSortableTodoListProps){
 	
 	const { setNodeRef } = useDroppable({
 		id: draggableList.id,
@@ -37,7 +38,11 @@ export default function DraggableSortableTodoList({ draggableList , hovered=fals
 	
 	return( 
 		<div className={cn} >
-			<h2 className="title">{title}</h2>
+			<div className="title-bar">
+				<h2 className="title">{title}</h2>
+				<AddTaskButton2 onClick={addTaskClicked}/>
+			</div>
+			
 			
 			<SortableContext
 				id={title}
@@ -59,10 +64,21 @@ export default function DraggableSortableTodoList({ draggableList , hovered=fals
 					
 					</div>
 				</div>	
-				
-				
 			</SortableContext>
 		</div>
 	);
 	
+}
+
+import { FaPlus } from "react-icons/fa";
+type AddTaskButton2Props={
+	onClick: () => void
+}
+function AddTaskButton2({ onClick }: AddTaskButton2Props){
+	return(
+		<div className="add-task-button-2">
+			<FaPlus onClick={onClick}/>
+		</div>
+		
+	);
 }

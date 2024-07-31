@@ -9,7 +9,7 @@ import "./ThreeDayPage.scss";
 
 export default function ThreeDayPage({ todosState }: {todosState:TodosState}) {
 	
-	const { todos , dateChanged } = todosState;
+	const { todos , dateChanged , addTask } = todosState;
 	
 	const title = "3-Day View";
 	
@@ -17,9 +17,13 @@ export default function ThreeDayPage({ todosState }: {todosState:TodosState}) {
 	const day2:Dayjs = day1.add( 1 , 'day' );
 	const day3:Dayjs = day1.add( 2 , 'day' );
 	
-	const todos1:Todo[] = todos.filter( todo => todo.doDate == day1.format('YYYY-MM-DD') );
-	const todos2:Todo[] = todos.filter( todo => todo.doDate == day2.format('YYYY-MM-DD') )
-	const todos3:Todo[] = todos.filter( todo => todo.doDate == day3.format('YYYY-MM-DD') )
+	const dayString1 = day1.format('YYYY-MM-DD');
+	const dayString2 = day2.format('YYYY-MM-DD');
+	const dayString3 = day3.format('YYYY-MM-DD');
+	
+	const todos1:Todo[] = todos.filter( todo => todo.doDate == dayString1 );
+	const todos2:Todo[] = todos.filter( todo => todo.doDate == dayString2 );
+	const todos3:Todo[] = todos.filter( todo => todo.doDate == dayString3 );
 	
 	function droppedOnList( todoId:string , listId:string , index:number ){
 		
@@ -50,17 +54,20 @@ export default function ThreeDayPage({ todosState }: {todosState:TodosState}) {
 					{
 						id: "day1",
 						title: "Today",
-						todos: todos1
+						todos: todos1,
+						addTaskClicked: () => addTask( "new task" , dayString1 ),
 					},
 					{
 						id: "day2",
 						title: "Tomorrow",
-						todos: todos2
+						todos: todos2,
+						addTaskClicked: () => addTask( "new task" , dayString2 ),
 					},
 					{
 						id: "day3",
 						title: getDayOfWeek(day3),
-						todos: todos3
+						todos: todos3,
+						addTaskClicked: () => addTask( "new task" , dayString3 ),
 					}
 				]}
 				droppedOnList={droppedOnList}

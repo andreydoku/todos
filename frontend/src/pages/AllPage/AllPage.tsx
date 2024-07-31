@@ -10,13 +10,13 @@ export default function AllPage({ todosState }: {todosState:TodosState}) {
 	
 	const title = "All Tasks";
 	
-	const { todos , doneChanged , titleChanged , dateChanged , deleteClicked , addTaskClicked } = todosState;
+	const { todos , doneChanged , titleChanged , dateChanged , deleteClicked , addTask } = todosState;
 	
 	return (
 		<div className="all-page">
 			<h1>{title}</h1>
 			
-			<AddTaskButton onClick={() => addTaskClicked()}/>
+			<AddTaskButton onClick={() => addTask("new task")}/>
 			
 			<TodoList 
 				todos={todos} 

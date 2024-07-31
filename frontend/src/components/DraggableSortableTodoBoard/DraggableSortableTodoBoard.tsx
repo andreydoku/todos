@@ -21,6 +21,7 @@ export type DraggableSortableList = {
 	id: string
 	title: string
 	todos: Todo[]
+	addTaskClicked: () => void
 	className?: string
 }
 export default function DraggableSortableTodoBoard(props: DraggableSortableTodoBoardProps) {
@@ -277,6 +278,7 @@ export default function DraggableSortableTodoBoard(props: DraggableSortableTodoB
 						titleChanged={titleChanged}
 						dateChanged={dateChanged}
 						deleteClicked={deleteClicked}
+						addTaskClicked={ () => draggableList.addTaskClicked() }
 					/>
 				) }
 				

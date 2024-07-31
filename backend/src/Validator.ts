@@ -22,9 +22,7 @@ export function validateTodoUpdateRequest(object:any): string|null{
 		return "object cannot be empty";
 	}
 	
-	if( isEmptyString( object.title ) )		return "field title can't be blank";
-	if( isEmptyString( object.doDate ) )	return "field doDate can't be blank";
-	
+
 	
 	if( object.doDate ){
 		let dateError = validateDate( object.doDate );
@@ -35,12 +33,25 @@ export function validateTodoUpdateRequest(object:any): string|null{
 	}
 	
 	
-	
 	const acceptedFields = [ 
-		{ name:"title",  type: "string",  nullAllowed: false },
-		{ name:"done",   type: "boolean", nullAllowed: false },
-		{ name:"doDate", type: "string",  nullAllowed: true },
+		{ name:"title"   , type: "string"  , required: false , nullAllowed: false , emptyStringAllowed: false },
+		{ name:"done"    , type: "boolean" , required: false , nullAllowed: false , emptyStringAllowed: false },
+		{ name:"doDate"  , type: "string"  , required: false , nullAllowed: true  , emptyStringAllowed: false },
+		{ name:"category", type: "string"  , required: false , nullAllowed: true  , emptyStringAllowed: false },
 	]
+	
+	//check that all required fields exist
+	const requiredFieldNames:string[] = acceptedFields
+		.filter( acceptedField => acceptedField.required )
+		.map( requiredField => requiredField.name );
+	
+	for( let i=0; i<requiredFieldNames.length; i++ ){
+		const requiredFieldName = requiredFieldNames[i];
+		if( object[requiredFieldName] == undefined ){
+			return `field '${requiredFieldName}' is missing`;
+		}
+	}
+	
 	
 	let fieldName: keyof typeof object;
 	for ( fieldName in object )
@@ -60,6 +71,10 @@ export function validateTodoUpdateRequest(object:any): string|null{
 		
 		if( !acceptedField.nullAllowed && fieldValue == null ){
 			return `field '${fieldName}' is null, which is not allowed`;
+		}
+		
+		if( fieldType == "string" && fieldValue.trim() == "" && acceptedField.emptyStringAllowed == false ){
+			return `field '${fieldName}' is empty string, which is not allowed`;
 		}
 		
 		//checks if the type is correct
@@ -95,20 +110,18 @@ export function validateCreateRequest(object:any): string|null{
 	
 	
 	const acceptedFields = [ 
-		{ name:"title",  type: "string",  nullAllowed: false , required: true },
-		{ name:"done",   type: "boolean", nullAllowed: false , required: true },
-		{ name:"doDate", type: "string",  nullAllowed: true  , required: false },
+		{ name:"title"    , type: "string"  , required: true  , nullAllowed: false , emptyStringAllowed: false },
+		{ name:"done"     , type: "boolean" , required: true  , nullAllowed: false , emptyStringAllowed: false },
+		{ name:"doDate"   , type: "string"  , required: false , nullAllowed: true  , emptyStringAllowed: false },
+		{ name:"category" , type: "string"  , required: false , nullAllowed: true  , emptyStringAllowed: false },
 	]
 	
-	if( isEmptyString( object.title ) )		return "field title can't be blank";
-	if( isEmptyString( object.doDate ) )	return "field doDate can't be blank";
 	
 	//check that all required fields exist
 	const requiredFieldNames:string[] = acceptedFields
 		.filter( acceptedField => acceptedField.required )
 		.map( requiredField => requiredField.name );
 	
-	console.log({requiredFieldNames})
 	for( let i=0; i<requiredFieldNames.length; i++ ){
 		const requiredFieldName = requiredFieldNames[i];
 		if( object[requiredFieldName] == undefined ){
@@ -125,22 +138,23 @@ export function validateCreateRequest(object:any): string|null{
 		const fieldValue = object[fieldName];
 		const fieldType = typeof fieldValue;
 		
-		//log("checking fieldName: " + fieldName + " value: " + fieldValue + " fieldType: " + fieldType)
 		
 		const acceptedField = acceptedFields.find( field => field.name == fieldName );
 		
 		
 		//checks if that field is even on the list of accepted fields
 		if( !acceptedField ){
-			return "field " + fieldName + " is not allowed";
-		}
-		
-		if( !acceptedField ){
 			return `field '${fieldName}' is not allowed`;
 		}
 		
+		//check if null
 		if( !acceptedField.nullAllowed && fieldValue == null ){
 			return `field '${fieldName}' is null, which is not allowed`;
+		}
+		
+		//check if empty string
+		if( fieldType == "string" && fieldValue.trim() == "" && acceptedField.emptyStringAllowed == false ){
+			return `field '${fieldName}' is empty string, which is not allowed`;
 		}
 		
 		//checks if the type is correct
@@ -175,14 +189,14 @@ export function validateDate( dateStr:string|null|undefined ) :string|null{
 	console.log(`validateDate: ${dateStr}`)
 	
 	if( dateStr == undefined ){
-		return "{field} cannot be undefined";
+		return "field '{field}' cannot be undefined";
 	}
 	if( dateStr == null ){
 		return null;
 	}
 	
 	if( dateStr.trim() === "" ){
-		return "{field} cannot be blank";
+		return "field '{field}' cannot be blank";
 	}
 	
 	
@@ -207,6 +221,6 @@ export function validateDate( dateStr:string|null|undefined ) :string|null{
 	console.log( `dateStr=${dateStr} isValid=${isValid}`  );
 	
 	
-	return isValid ? null : "{field} invalid date format" ;
+	return isValid ? null : "field '{field}' is invalid date format" ;
 
 }
