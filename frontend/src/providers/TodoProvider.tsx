@@ -24,18 +24,19 @@ export type TodosState = {
 const TodoContext = createContext<TodosState>({
 
 	todos: [],
-	doneChanged: async (id: string, newDone: boolean) => {},
-	titleChanged: async ( id:string , newTitle:string ) => {},
-	dateChanged: async ( id:string , newDate:string|null ) => {},
-	deleteClicked: async ( id:string ) => {},
-	addTask: async (title:string, doDate?:string) => {},
+	doneChanged: async (_id: string, _: boolean) => {},
+	titleChanged: async ( _id:string , _newTitle:string ) => {},
+	dateChanged: async ( _id:string , _newDate:string|null ) => {},
+	deleteClicked: async ( _id:string ) => {},
+	addTask: async ( _title:string , _doDate?:string ) => {},
 
 });
 
 export default function TodoProvider({ children }: TodoProviderProps) {
 	
 	const [todos, setTodos] = useState<Todo[]>([]);
-	const [, forceUpdate] = useReducer(x => x + 1, 0);
+	const [_, forceUpdate] = useReducer(x => x + 1, 0);
+	
 	
 	useEffect( () => {
 		fetchAllTodos();
