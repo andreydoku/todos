@@ -26,6 +26,14 @@ export function getMondayOf( date:Dayjs ){
 	
 }
 
+export function getDayOfWeek(date:Dayjs){
+	const weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+	const dayOfWeek:number = date.day();
+	
+	return weekdays[dayOfWeek];
+}
+
+
 export function isSameDate( date1:Dayjs , date2:Dayjs ){
 	return date1.format('YYYYMMDD') === date2.format('YYYYMMDD');
 }
@@ -33,3 +41,4 @@ export function isToday( date1:Dayjs ){
 	const today = dayjs();
 	return isSameDate( date1 , today );
 }
+

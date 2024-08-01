@@ -13,6 +13,7 @@ import CalendarPage from './pages/CalendarPage/CalendarPage';
 import TodoProvider from './providers/TodoProvider';
 
 import './index.scss';
+import ThreeDayPageV2 from './pages/ThreeDayPageV2/ThreeDayPageV2';
 
 
 export default function App() {
@@ -31,6 +32,8 @@ export default function App() {
 						<Route path="/today" element={<TodayPage />} />
 						<Route path="/three-day" element={<ThreeDayPage />} />
 						<Route path="/calendar" element={<CalendarPage />} />
+						
+						<Route path="/three-day-v2" element={<ThreeDayPageV2 />} />
 						
 						<Route path="*" element={<ErrorPage />} />
 					</Routes>

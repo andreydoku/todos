@@ -1,16 +1,14 @@
-.draggable-sortable-todo-list{
-	
+.todo-list{
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: auto 1fr;
 	
 	transition: all ease-in-out 0.2s;
-	background-color: rgba(255, 255, 255, 5%);
 	border-radius: 6px;
-    padding: 20px;
 	
-	padding: 0;
-	background-color: transparent;
+	padding: 10px;
+	margin: -10px;
+	
 	
 	
 	.title-bar{
@@ -60,7 +58,7 @@
 		}
 	}
 	
-	&.hovered{
+	&.dragged-over{
 		// .draggable-area{ 
 		// 	background-color: rgba(240, 248, 255, 0.1);
 		// }

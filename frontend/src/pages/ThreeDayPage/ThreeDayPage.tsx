@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from "dayjs";
 import { Todo } from "../../models/Todo";
-import { datejsToString } from "../../utils/utils";
+import { datejsToString, getDayOfWeek } from "../../utils/utils";
 import DraggableSortableTodoBoard from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
 import { useTodos } from "../../providers/TodoProvider";
 
@@ -78,9 +78,4 @@ export default function ThreeDayPage() {
 }
 
 
-function getDayOfWeek(date:Dayjs){
-	const weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-	const dayOfWeek:number = date.day();
-	
-	return weekdays[dayOfWeek];
-}
+
