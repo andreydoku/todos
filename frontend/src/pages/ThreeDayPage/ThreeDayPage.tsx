@@ -1,81 +1,76 @@
 import dayjs, { Dayjs } from "dayjs";
-import { Todo } from "../../models/Todo";
-import { datejsToString, getDayOfWeek } from "../../utils/utils";
-import DraggableSortableTodoBoard from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
-import { useTodos } from "../../providers/TodoProvider";
+
+
 
 import "./ThreeDayPage.scss";
+import TodoBoard from "../../components/TodoBoard/TodoBoard";
+import TodoList from "../../components/TodoBoard/TodoList/TodoList";
+import { useTodos } from "../../providers/TodoProvider";
+import { getDayOfWeek } from "../../utils/utils";
+import { Todo } from "../../models/Todo";
+
+
 
 
 export default function ThreeDayPage() {
 	
-	const { todos , dateChanged , addTask } = useTodos();
+	//const { todos , dateChanged , addTask } = useTodos();
 	
 	const title = "3-Day View";
+	
 	
 	const day1:Dayjs = dayjs();
 	const day2:Dayjs = day1.add( 1 , 'day' );
 	const day3:Dayjs = day1.add( 2 , 'day' );
 	
-	const dayString1 = day1.format('YYYY-MM-DD');
-	const dayString2 = day2.format('YYYY-MM-DD');
-	const dayString3 = day3.format('YYYY-MM-DD');
+	const dayString1:string = day1.format('YYYY-MM-DD');
+	const dayString2:string = day2.format('YYYY-MM-DD');
+	const dayString3:string = day3.format('YYYY-MM-DD');
 	
-	const todos1:Todo[] = todos.filter( todo => todo.doDate == dayString1 );
-	const todos2:Todo[] = todos.filter( todo => todo.doDate == dayString2 );
-	const todos3:Todo[] = todos.filter( todo => todo.doDate == dayString3 );
-	
-	function droppedOnList( todoId:string , listId:string , index:number ){
+	const { dateChanged , addTask } = useTodos();
+	function droppedTodoOnList( todo:Todo , listId:string ){
 		
-		console.log("droppedOnList: " + listId + ", " + index + ", " + "todoId");
+		console.log(`dropped '${todo.title}' onto '${listId}'.`)
 		
-		let newDoDate = null;
-		switch( listId ){
-			case "day1": newDoDate = day1; break;
-			case "day2": newDoDate = day2; break;
-			case "day3": newDoDate = day3; break;
-			default: {
-				console.error("unrecognized listId: " + listId)
-				return;
-			}
-		}
-		
-		dateChanged(todoId , datejsToString( newDoDate ) );
-		
+		const newDoDate = listId;
+		dateChanged( todo.id , newDoDate );
 	}
-
 	
 	return (
 		<div className="three-day-page">
 			<h1 className="title">{title}</h1>
 			
-			<DraggableSortableTodoBoard 
-				draggableLists={[
-					{
-						id: "day1",
-						title: "Today",
-						todos: todos1,
-						addTaskClicked: () => addTask( "new task" , dayString1 ),
-					},
-					{
-						id: "day2",
-						title: "Tomorrow",
-						todos: todos2,
-						addTaskClicked: () => addTask( "new task" , dayString2 ),
-					},
-					{
-						id: "day3",
-						title: getDayOfWeek(day3),
-						todos: todos3,
-						addTaskClicked: () => addTask( "new task" , dayString3 ),
-					}
-				]}
-				droppedOnList={droppedOnList}
-			/>
+			<TodoBoard>
+				
+				<TodoList
+					id={dayString1}
+					title="Today"
+					filter={ todo => todo.doDate == dayString1 }
+					droppedOn={ todo => droppedTodoOnList(todo,dayString1) }
+					addTaskClicked={ () => addTask( "new task" , dayString1 )}
+				/>
+				<TodoList
+					id={dayString2}
+					title="Tomorrow"
+					filter={ todo => todo.doDate == dayString2 }
+					droppedOn={ todo => droppedTodoOnList(todo,dayString2) }
+					addTaskClicked={ () => addTask( "new task" , dayString2 )}
+				/>
+				<TodoList
+					id={dayString3}
+					title={getDayOfWeek(day3)}
+					filter={ todo => todo.doDate == dayString3 }
+					droppedOn={ todo => droppedTodoOnList(todo,dayString3) }
+					addTaskClicked={ () => addTask( "new task" , dayString3 )}
+				/>
+				
+				
+			</TodoBoard>
 			
 		</div>
 	)
 }
+
 
 
 

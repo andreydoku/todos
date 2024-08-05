@@ -33,7 +33,7 @@ export function validateTodoUpdateRequest(object:any): string|null{
 	}
 	
 	
-	const acceptedFields = [ 
+	const acceptedFields = [
 		{ name:"title"   , type: "string"  , required: false , nullAllowed: false , emptyStringAllowed: false },
 		{ name:"done"    , type: "boolean" , required: false , nullAllowed: false , emptyStringAllowed: false },
 		{ name:"doDate"  , type: "string"  , required: false , nullAllowed: true  , emptyStringAllowed: false },
@@ -56,7 +56,6 @@ export function validateTodoUpdateRequest(object:any): string|null{
 	let fieldName: keyof typeof object;
 	for ( fieldName in object )
 	{
-		
 		const fieldValue = object[fieldName];
 		const fieldType = typeof fieldValue;
 		

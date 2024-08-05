@@ -42,3 +42,46 @@ export function isToday( date1:Dayjs ){
 	return isSameDate( date1 , today );
 }
 
+
+//@ts-ignore
+export function getChildrenByTypeDeep( children , typeSearched:string ){
+	
+	//@ts-ignore
+	let output = [];
+	
+	if( !children.forEach ){
+		children = [children];
+	}
+	
+	//@ts-ignore
+	children.forEach( child => {
+		
+		if( Array.isArray(child) ){
+			const nestedChildren = getChildrenByTypeDeep( child , typeSearched );
+			//@ts-ignore
+			output = [ ...output , ...nestedChildren ];
+		}
+		else{
+			let type = child.type;
+			if( child.type.name ){
+				type = child.type.name;
+			}
+			
+			if( type == typeSearched ){
+				output.push( child );
+			}
+			
+			const children = child.props?.children;
+			if( children ){
+				const nestedChildren = getChildrenByTypeDeep( children , typeSearched );
+				//@ts-ignore
+				output = [ ...output , ...nestedChildren ];
+			}
+		}
+		
+	});
+	
+	//@ts-ignore
+	return output;
+	
+}

@@ -1,24 +1,40 @@
-import TodoList from "../../components/TodoList/TodoList";
-import AddTaskButton from "../../components/AddTaskButton/AddTaskButton";
+
+import TodoBoard from "../../components/TodoBoard/TodoBoard";
+import TodoList from "../../components/TodoBoard/TodoList/TodoList";
 import { useTodos } from "../../providers/TodoProvider";
+
 
 import "./AllPage.scss";
 
+
 export default function AllPage() {
 	
-	const title = "All Tasks";
 	
-	const { todos , addTask } = useTodos();
+	const title = "All";
+	
+	const { addTask } = useTodos();
+	
 	
 	return (
 		<div className="all-page">
-			<h1>{title}</h1>
+			<h1 className="title">{title}</h1>
 			
-			<AddTaskButton onClick={() => addTask("new task")}/>
+			<TodoBoard>
+				
+				<TodoList
+					id="all"
+					title="All"
+					filter={ todo => true }
+					droppedOn={ todo => {} }
+					addTaskClicked={ () => addTask( "new task" )}
+				/>
+				
+			</TodoBoard>
 			
-			<TodoList 
-				todos={todos} 
-			/>
 		</div>
 	)
 }
+
+
+
+

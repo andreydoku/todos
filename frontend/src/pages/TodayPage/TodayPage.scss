@@ -1,11 +1,15 @@
 .today-page{
 	
+	height: 100%;
+    display: flex;
+    flex-direction: column;
+	//background-color: rgba(0,0,0 , 20% );
+	
 	.title{
 		
 	}
-	.draggable-sortable-todo-board{
-		height: 600px;
-		grid-template-columns: 400px 400px;
+	.todo-board{
+		//height: 600px;
+		//grid-template-columns: 400px 400px 400px;
 	}
-	
 }

@@ -1,12 +1,12 @@
-
-
 import dayjs, { Dayjs } from "dayjs";
-import { Todo } from "../../models/Todo";
-import { datejsToString } from "../../utils/utils";
-import DraggableSortableTodoBoard from "../../components/DraggableSortableTodoBoard/DraggableSortableTodoBoard";
+
+import TodoBoard from "../../components/TodoBoard/TodoBoard";
+import TodoList from "../../components/TodoBoard/TodoList/TodoList";
 import { useTodos } from "../../providers/TodoProvider";
 
+
 import "./TodayPage.scss";
+
 
 export default function TodayPage() {
 	
@@ -15,59 +15,38 @@ export default function TodayPage() {
 	
 	const title = todayDate.format('MMM D, YYYY');
 	
-	const { todos , dateChanged , addTask } = useTodos();
 	
-	
-	
-	const todaysTodos:Todo[] = todos.filter( todo => todo.doDate == todayDateString )
-	const backlogTodos:Todo[] = todos.filter( todo => !todo.doDate && !todo.done );
-	
-	//console.log({ todos , todaysTodos , backlogTodos });
-	
-	
-	function droppedOnList( todoId:string , listId:string , index:number ){
-		
-		let newDate = null;
-		
-		if( listId == "today" ) newDate = todayDate;
-		else if( listId == "backlog" ) newDate = null;
-		else console.error("unrecognized listId: " + listId)
-		
-		console.log({ todayDate:datejsToString(todayDate)  , newDate: datejsToString(newDate) , index });
-		
-		dateChanged(todoId , datejsToString( newDate ) );
-		
-	}
+	const { dateChanged , addTask } = useTodos();
 	
 	
 	return (
 		<div className="today-page">
 			<h1 className="title">{title}</h1>
 			
-			<DraggableSortableTodoBoard 
-				draggableLists={[
-					{
-						id: "today",
-						title: "Today",
-						todos: todaysTodos,
-						addTaskClicked: () => addTask( "new task" , todayDateString ),
-					},
-					{
-						id: "backlog",
-						title: "Backlog",
-						todos: backlogTodos,
-						addTaskClicked: () => addTask( "new task" ),
-					}
-				]}
-				droppedOnList={droppedOnList}
-			/>
+			<TodoBoard>
+				
+				<TodoList
+					id="today"
+					title="Today"
+					filter={ todo => todo.doDate == todayDateString }
+					droppedOn={ todo => dateChanged( todo.id , todayDateString ) }
+					addTaskClicked={ () => addTask( "new task" , todayDateString )}
+				/>
+				<TodoList
+					id="backlog"
+					title="Backlog"
+					filter={ todo => !todo.doDate && !todo.done }
+					droppedOn={ todo => dateChanged( todo.id , null ) }
+					addTaskClicked={ () => addTask( "new task" )}
+				/>
+				
+				
+				
+			</TodoBoard>
 			
-
 		</div>
-
-	);
+	)
 }
-
 
 
 

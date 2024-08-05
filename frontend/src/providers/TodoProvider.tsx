@@ -55,8 +55,8 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		fetchAllTodos();
 	} , [] );
 	
-	//const todosRestClient:RestClient = new RestClient();
-	const todosRestClient:RestClient = new RestClientMocked();
+	const todosRestClient:RestClient = new RestClient();
+	// const todosRestClient:RestClient = new RestClientMocked();
 	
 	
 	const fetchAllTodos = async () => {
@@ -98,11 +98,16 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		const index = todos.findIndex( todo => id == todo.id );
 		const updatedTodo = todos[index];
 		
-		const{ title , doDate , done } = todoUpdateRequest;
 		
-		if( title  != null && title  != undefined )	updatedTodo.title = title;
-		if( doDate != null && doDate != undefined )	updatedTodo.doDate = doDate;
-		if( done   != null && done   != undefined )	updatedTodo.done = done;
+		
+		
+		
+		
+		if( todoUpdateRequest.title  !== undefined )	updatedTodo.title = todoUpdateRequest.title;
+		if( todoUpdateRequest.doDate !== undefined )	updatedTodo.doDate = todoUpdateRequest.doDate;
+		if( todoUpdateRequest.done   !== undefined )	updatedTodo.done = todoUpdateRequest.done;
+
+		console.log({ todoUpdateRequest , updatedTodo })
 		
 		todos[index] = updatedTodo;
 		setTodos( todos );
@@ -110,7 +115,7 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		
 		
 		
-		
+		//this part needs to be done async
 		try{
 			const updatedTodo = await todosRestClient.updateTodo( id , todoUpdateRequest );
 			

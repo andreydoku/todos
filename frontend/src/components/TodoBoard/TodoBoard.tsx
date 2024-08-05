@@ -1,4 +1,4 @@
-import { Children, cloneElement, ReactNode, useState } from "react";
+import { Children, cloneElement, createContext, ReactNode, useContext, useState } from "react";
 import "./TodoBoard.scss";
 
 import { defaultDropAnimation, DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, DropAnimation, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
@@ -6,6 +6,18 @@ import { restrictToWindowEdges} from '@dnd-kit/modifiers';
 import { Todo } from "../../models/Todo";
 import TodoItem from "../TodoItem/TodoItem";
 import { TodoListProps } from "./TodoList/TodoList";
+import { getChildrenByTypeDeep } from "../../utils/utils";
+
+
+export type TodoBoardState = {
+	draggedTodo: Todo|null;
+	draggedOverListId: string|null;
+}
+const TodoBoardContext = createContext<TodoBoardState>({
+	draggedTodo: null,
+	draggedOverListId: null,
+})
+export const useTodoBoardState = () => useContext(TodoBoardContext);
 
 
 type TodoBoardProps = {
@@ -17,32 +29,10 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 	const [draggedOverListId, setDraggedOverListId] = useState<string|null>( null );
 	
 	
-	
-	const todoListPropsArray:TodoListProps[] = getTodoListPropsArray();
-	
-	
-	function getTodoListPropsArray() :TodoListProps[] {
-		
-		const output:TodoListProps[] = [];
-		
-		Children.forEach( children , child =>{
-		
-			//@ts-ignore
-			const type = child?.type.name;
-			
-			if( type == "TodoList" ){
-				
-				//@ts-ignore
-				const props:TodoListProps = child.props;
-				output.push(props);
-				
-			}
-			
-		} )
-		
-		return output;
-		
-	}
+	//TODO - look into useCallback and useMemo
+	const todoListPropsArray:TodoListProps[] = getChildrenByTypeDeep( children , "TodoList" )
+													.map( child => child.props as TodoListProps );
+
 	
 	
 	function handleDragStart({ active }: DragStartEvent){
@@ -98,7 +88,7 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 			return;
 		}
 		
-		const draggedOverList = getTodoListById( draggedOverListId );
+		const draggedOverList:TodoListProps|undefined = getTodoListById( draggedOverListId );
 		if( draggedOverList && draggedTodo ){
 			
 			//draggedOverList.props.blah();
@@ -114,8 +104,6 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 		
 		
 	}
-	
-	
 	
 	
 	
@@ -150,35 +138,22 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 		// return id;
 	}
 	
-	function getTodoListById( id:string ){
+	function getTodoListById( id:string ): TodoListProps|undefined{
 		
-		return todoListPropsArray.find( todoListProp => todoListProp.id == id );
+		//return todoListPropsArray.find( todoListProp => todoListProp.id == id );
 		
-		// let output = null;
+		const output = todoListPropsArray.find( todoListProp => todoListProp.id == id );
 		
-		// Children.forEach( children, child  =>{
-		// 	//console.log(child);
+		if( output == undefined ){
+			console.log("failed to find todolist by id: " + id);
+			console.log({ todoListPropsArray })
 			
-		// 	//@ts-ignore
-		// 	const type = child?.type.name;
+		}
 			
-		// 	if( type == "TodoList" ){
-				
-				
-				
-		// 		//@ts-ignore
-		// 		const listtodoListId = child.props.id;
-				
-		// 		if( listtodoListId == id ){
-		// 			output = child;
-		// 		}
-		// 	}
 			
-		// })
+		return output;
 		
-		// return output;
 	}
-	
 	
 	
 	const sensors = useSensors(
@@ -193,47 +168,33 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 	};
 	
 	
-	const childrenWithProps = Children.map(children, child => {
-
-		//@ts-ignore
-		const type = child.type.name;
-
-		if (type == "TodoList") {
-
-			//@ts-ignore
-			const id = child.props.id;
-			const draggedOver: boolean = id == draggedOverListId;
-
-			//@ts-ignore
-			return cloneElement(child, { draggedOver: draggedOver });
-		}
-		return child;
-	});
-	
 	return (
-		<div className="todo-board">
-			<DndContext
-				sensors={sensors}
-				//collisionDetection={closestCorners}
-				onDragStart={handleDragStart}
-				onDragOver={handleDragOver}
-				onDragEnd={handleDragEnd}
-				>
-				
-				{/* {children} */}
-				{childrenWithProps}
-				
-				<DragOverlay 
-					dropAnimation={dropAnimation}
-					modifiers={[restrictToWindowEdges]}
+		<TodoBoardContext.Provider value={{ draggedTodo , draggedOverListId }}>
+		
+			<div className="todo-board">
+				<DndContext
+					sensors={sensors}
+					//collisionDetection={closestCorners}
+					onDragStart={handleDragStart}
+					onDragOver={handleDragOver}
+					onDragEnd={handleDragEnd}
 					>
-					{ draggedTodo &&
-						<TodoItem todo={draggedTodo} pickedUp />
-					}
-				</DragOverlay>
+					
+					{children}
+					
+					<DragOverlay 
+						dropAnimation={dropAnimation}
+						modifiers={[restrictToWindowEdges]}
+						>
+						{ draggedTodo &&
+							<TodoItem todo={draggedTodo} pickedUp />
+						}
+					</DragOverlay>
+					
+				</DndContext>
 				
-			</DndContext>
-			
-		</div>
-	)
+			</div>
+		
+		</TodoBoardContext.Provider>
+	);
 }
