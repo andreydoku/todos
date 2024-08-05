@@ -2,6 +2,7 @@ import { AttributeValue, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand , DeleteCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { uuid } from 'uuidv4';
 import { Todo} from "./Todo";
+import { TodoUpdateRequest } from "./TodoUpdateRequest";
 
 
 const client = new DynamoDBClient({});
@@ -45,18 +46,13 @@ export class Service{
 		return todo;
 		
 	}
-	async updateTodo( id:string , requestBody:any ){
-		
-		//validate fields and types?
-		//create a TodoUpdateRequest type 
-		// - has all the same fields as Todo, but all of them are optional
-		// - try to cast the requestBody into that type, and if it fails, then throw a 400?
+	async updateTodo( id:string , todoUpdateRequest:TodoUpdateRequest ){
 		
 		const updateCommand = new UpdateCommand({
 			TableName: tableName,
 			Key: { id: id },
-			UpdateExpression: this.getUpdateExpression( requestBody ),
-			ExpressionAttributeValues: this.getExpressionAttributeValues( requestBody ),
+			UpdateExpression: this.getUpdateExpression( todoUpdateRequest ),
+			ExpressionAttributeValues: this.getExpressionAttributeValues( todoUpdateRequest ),
 			ReturnValues: "ALL_NEW",
 		});
 		

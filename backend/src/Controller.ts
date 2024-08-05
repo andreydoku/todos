@@ -1,11 +1,18 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { Todo } from "./Todo";
-
 import { Service } from "./Service";
+import { validateDate, validateTodoUpdateRequest } from './Validator';
+import { TodoUpdateRequest } from './TodoUpdateRequest';
+
 
 
 const service:Service = new Service();
+
+const CORS_HEADERS = {
+	"Access-Control-Allow-Origin": '*',
+	"Access-Control-Allow-Credentials": true,
+}
 
 // GET /todos/{id}
 export const getTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -62,16 +69,18 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	}
 	
 	const requestBody = JSON.parse(event.body);
-	const todo:Todo = requestBody as Todo;
 	
-	if( !todo.title ){
+	const validationError = validateTodoUpdateRequest(requestBody);
+	if( validationError ){
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
-				message: "Request body is missing the title"
+				message: validationError,
 			})
 		};
 	}
+	
+	const todo:Todo = requestBody as Todo;
 	
 	
 	try {
@@ -80,6 +89,7 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		
 		return {
 			statusCode: 200,
+			headers: CORS_HEADERS,
 			body: JSON.stringify( createdTodo )
 		};
 		
@@ -100,6 +110,7 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	
 }
 
+
 // POST /todos/{id}
 export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 	
@@ -116,7 +127,7 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		};
 	}
 	
-	if(!event.body ){
+	if( !event.body ){
 		return {
 			statusCode: 400,
 			body: JSON.stringify({
@@ -127,14 +138,25 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 	
 	const requestBody = JSON.parse(event.body);
 	
+	const validationError = validateTodoUpdateRequest(requestBody);
+	if( validationError ){
+		return {
+			statusCode: 400,
+			body: JSON.stringify({
+				message: validationError,
+			})
+		};
+	}
 	
+	const todoUpdateRequest:TodoUpdateRequest = requestBody as TodoUpdateRequest;
 	
 	try {
 		
-		const result = await service.updateTodo(id, requestBody);
+		const result = await service.updateTodo(id, todoUpdateRequest);
 		
 		return {
 			statusCode: 200,
+			headers: CORS_HEADERS,
 			body: JSON.stringify(result)
 		};
 		
@@ -178,6 +200,7 @@ export const deleteTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		
 		return {
 			statusCode: 200,
+			headers: CORS_HEADERS,
 			body: JSON.stringify( deletedTodo )
 		};
 		
@@ -209,10 +232,7 @@ export const getAllTodos: APIGatewayProxyHandler = async (event: APIGatewayProxy
 		
 		const response = {
 			statusCode: 200,
-			headers: {
-				"Access-Control-Allow-Origin": '*',
-				"Access-Control-Allow-Credentials": false,
-			},
+			headers: CORS_HEADERS,
 			body: JSON.stringify( Todos )
 		};
 		return response;

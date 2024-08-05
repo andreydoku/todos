@@ -24,6 +24,7 @@ a{
 
 *{
 	box-sizing: border-box;
+	font-family: "Roboto";
 }
 
 body {
@@ -42,7 +43,7 @@ body {
 		
 		width: 100%;
 		display: grid;
-		grid-template-columns: 200px 1fr;
+		grid-template-columns: 150px 1fr;
 		
 		main{
 			width: 100%;
@@ -79,6 +80,11 @@ h1{
 	font-size: 48px;
 	
 	margin-bottom: 40px;
+}
+h2{
+	text-shadow: 0 2px 2px rgb(0 0 0 / 50%);
+	letter-spacing: 3px;
+	text-transform: uppercase;
 }
 
 // h1  { font-size: 60px; }

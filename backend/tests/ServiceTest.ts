@@ -23,3 +23,6 @@ log( "ExpressionAttributeValues:"  );
 log( expressionAttributeValues )
 
 //npx ts-node tests/ServiceTest.ts
+
+
+

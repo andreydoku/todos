@@ -1,0 +1,71 @@
+.todo-list{
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: auto 1fr;
+	
+	transition: all ease-in-out 0.2s;
+	border-radius: 6px;
+	
+	padding: 10px;
+	margin: -10px;
+	
+	
+	
+	.title-bar{
+		display: flex;
+		justify-content: space-between;
+    	align-items: center;
+		margin-bottom: 10px;
+		
+		.title{
+			text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+			min-height: 1em;
+		}
+		.add-task-button-2{
+			color: lightgreen;
+			font-size: 24px;
+			padding: 6px;
+			display: flex;
+			border-radius: 50%;
+			
+			cursor: pointer;
+			transition: all ease-in-out 0.2s;
+			opacity: 0;
+			
+			&:hover{
+				background-color: rgba(255,255,255, 0.10 );
+			}
+		}
+		
+		
+	}
+	
+	.draggable-area{
+		
+		//background-color: antiquewhite;
+		height: 100%;
+		transition: all ease-in-out 0.2s;
+		border-radius: 5px;
+		
+		.list-area{
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 8px;
+			
+			//padding: 10px;
+			
+			
+		}
+	}
+	
+	&.dragged-over{
+		background-color: rgba(240, 248, 255, 0.1);
+	}
+	&:hover{
+		.add-task-button-2{ opacity: 1 };
+	}
+	
+	
+	
+    
+}
