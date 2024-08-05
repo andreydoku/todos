@@ -1,10 +1,9 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 
-import { Todo } from "../../../models/Todo";
-import TodoItem from "../../TodoItem/TodoItem";
-
 import "./SortableTodoItem.scss";
+import TodoItem from "../../../TodoItem/TodoItem";
+import { Todo } from "../../../../models/Todo";
 
 
 type SortableTodoItemProps = {

@@ -1,9 +1,11 @@
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
-import SortableTodoItem from "../../DraggableSortableTodoBoard/SortableTodoItem/SortableTodoItem";
+
 import { useTodos } from "../../../providers/TodoProvider";
 import { Todo } from "../../../models/Todo";
+import { useTodoBoardState } from "../TodoBoard";
+import SortableTodoItem from "./SortableTodoItem/SortableTodoItem";
 import "./TodoList.scss";
 
 export type TodoListProps = {
@@ -26,7 +28,7 @@ export default function TodoList({ id , title , filter , addTaskClicked , classN
 	
 	const { draggedOverListId } = useTodoBoardState();
 	const draggedOver = draggedOverListId == id;
-	console.log({ myId: id , draggedOverListId , draggedOver })
+	//console.log({ myId: id , draggedOverListId , draggedOver })
 	
 	let cn = "todo-list";
 	if( draggedOver ){
@@ -68,7 +70,6 @@ export default function TodoList({ id , title , filter , addTaskClicked , classN
 }
 
 import { FaPlus } from "react-icons/fa";
-import { useTodoBoardState } from "../TodoBoard";
 type AddTaskButton2Props={
 	onClick: () => void
 }

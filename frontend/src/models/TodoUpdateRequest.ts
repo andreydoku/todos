@@ -1,3 +1,4 @@
+import { isEmptyString } from "../utils/utils";
 
 
 export type TodoUpdateRequest = {
@@ -61,12 +62,3 @@ export function isTodoUpdateRequest(object:any): string|null{
 
 
 
-function isEmptyString( value: any ){
-	
-	if( value == null || value == undefined ){
-		return false;
-	}
-	
-	return (typeof value ) == "string"   &&   value.trim() === "";
-	
-}

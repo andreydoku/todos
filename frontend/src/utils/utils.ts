@@ -1,4 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
+import { Todo } from '../models/Todo';
+import { TodoUpdateRequest } from '../models/TodoUpdateRequest';
 
 
 export function datejsToString( dayjs: Dayjs|null ){
@@ -84,4 +86,21 @@ export function getChildrenByTypeDeep( children , typeSearched:string ){
 	//@ts-ignore
 	return output;
 	
+}
+
+export function isEmptyString( value: any ){
+	
+	if( value == null || value == undefined ){
+		return false;
+	}
+	
+	return (typeof value ) == "string"   &&   value.trim() === "";
+	
+}
+
+
+export function applyTodoUpdateRequest( todo:Todo , todoUpdateRequest:TodoUpdateRequest ){
+	if( todoUpdateRequest.title  !== undefined )	todo.title = todoUpdateRequest.title;
+	if( todoUpdateRequest.doDate !== undefined )	todo.doDate = todoUpdateRequest.doDate;
+	if( todoUpdateRequest.done   !== undefined )	todo.done = todoUpdateRequest.done;
 }

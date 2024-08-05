@@ -3,11 +3,7 @@
 	height: 100%;
     display: flex;
     flex-direction: column;
-	//background-color: rgba(0,0,0 , 20% );
 	
-	.title{
-		
-	}
 	.todo-board{
 		
 		display: grid;
@@ -30,14 +26,9 @@
 			grid-template-columns: repeat(7,1fr);
 			grid-template-rows: 20px 1fr 1fr 1fr;
 			gap: 5px;
-			
-			
-			
-			
 		}
 		
 	}
-	
 	
 	.header{
 			
@@ -49,7 +40,6 @@
 			0px 3px 1px -2px rgba(0, 0, 0, 0.05),
 			0px 1px 5px  0px rgba(0, 0, 0, 0.03);
 
-		
 		font-size: 10px;
 		letter-spacing: 2px;
 		//text-transform: none;
@@ -58,15 +48,10 @@
 	}
 	
 	
-	
-	
-	
 	.todo-list{
 		height: 100%;
 		background-color: rgba(255, 255, 255, 5%);
-		&.dragged-over{
-			background-color: rgba(240, 248, 255, 15%);
-		}
+		
 		border-radius: 3px;
 		padding: 5px;
 		margin: 0;
@@ -97,18 +82,16 @@
 		}
 		
 		&.today{
-			//background-color: rgba(60, 179, 113, 25%);
 			border: 1px solid rgba(240, 248, 255, 40%);
 		}
 		
+		&.dragged-over{
+			background-color: rgba(240, 248, 255, 15%);
+		}
 		
-		// &.hovered { &.today{
-		// 	background-color: rgba(60, 179, 113, 35%);
-		// }}
 		
 	}
 	.todo-item{
-		//grid-template-columns: 14px auto;
 		grid-template-columns: 14px auto 20px;
 		padding: 2px 4px;
 		gap: 2px;
@@ -131,7 +114,6 @@
 			display: none;
 		}
 		.delete-button{
-			//display: none;
 			font-size: 10px;
 			padding: 2px;
 			width: 20px;

@@ -24,8 +24,8 @@ export default function AllPage() {
 				<TodoList
 					id="all"
 					title="All"
-					filter={ todo => true }
-					droppedOn={ todo => {} }
+					filter={ (_todo) => true }
+					droppedOn={ (_todo) => {} }
 					addTaskClicked={ () => addTask( "new task" )}
 				/>
 				

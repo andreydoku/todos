@@ -2,7 +2,8 @@ import React, { createContext, useContext, useEffect, useReducer, useState } fro
 import { Todo } from '../models/Todo';
 import { RestClient } from '../restClient/RestClient';
 import { TodoUpdateRequest } from '../models/TodoUpdateRequest';
-import { RestClientMocked } from '../restClient/RestClientMocked';
+import { applyTodoUpdateRequest } from '../utils/utils';
+// import { RestClientMocked } from '../restClient/RestClientMocked';
 
 
 type TodoProviderProps = {
@@ -18,9 +19,6 @@ export type TodosState = {
 	deleteClicked: ( id:string ) => Promise<void>,
 	addTask: (title:string, doDate?:string) => Promise<void>,
 }
-
-
-
 
 
 const TodoContext = createContext<TodosState>({
@@ -40,7 +38,7 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 	const [todos, setTodos] = useState<Todo[]>([]);
 	const [_, forceUpdate] = useReducer(x => x + 1, 0);
 	
-	const [sortOrder, setSortOrder] = useState([
+	const [sortOrder, _setSortOrder] = useState([
 		"bcc4bd70-816e-42a9-a62e-61a6d3a4e974", //clean room
 		"8cd3e932-c155-40a5-965e-7abcc78f39f8", //clean kitchen
 		"87809db0-017a-49ae-9787-ed9bc6cc5b06", //update resume
@@ -48,7 +46,6 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		"71fa9826-3c83-4a1d-9b37-9e7f94901c05", //buy workout clothes
 		"d850329b-bde1-44d8-b8c5-ffd7383e2d39", //workout
 	]);
-	
 	
 	
 	useEffect( () => {
@@ -98,21 +95,15 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		const index = todos.findIndex( todo => id == todo.id );
 		const updatedTodo = todos[index];
 		
-		
-		
-		
-		
-		
-		if( todoUpdateRequest.title  !== undefined )	updatedTodo.title = todoUpdateRequest.title;
-		if( todoUpdateRequest.doDate !== undefined )	updatedTodo.doDate = todoUpdateRequest.doDate;
-		if( todoUpdateRequest.done   !== undefined )	updatedTodo.done = todoUpdateRequest.done;
+		applyTodoUpdateRequest( updatedTodo , todoUpdateRequest );
+		// if( todoUpdateRequest.title  !== undefined )	updatedTodo.title = todoUpdateRequest.title;
+		// if( todoUpdateRequest.doDate !== undefined )	updatedTodo.doDate = todoUpdateRequest.doDate;
+		// if( todoUpdateRequest.done   !== undefined )	updatedTodo.done = todoUpdateRequest.done;
 
 		console.log({ todoUpdateRequest , updatedTodo })
 		
 		todos[index] = updatedTodo;
 		setTodos( todos );
-		
-		
 		
 		
 		//this part needs to be done async
@@ -131,6 +122,8 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		
 		
 	}
+	
+	
 	
 	const doneChanged = async ( id:string , newDone:boolean ) => {
 		

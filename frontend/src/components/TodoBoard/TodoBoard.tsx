@@ -1,4 +1,4 @@
-import { Children, cloneElement, createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import "./TodoBoard.scss";
 
 import { defaultDropAnimation, DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, DropAnimation, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
@@ -60,10 +60,7 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 		if( draggedOverThing.type == "Todo" ){
 			//console.log( {"draggedOverThing.value": draggedOverThing.value } )
 			
-			const draggedFromListTitle = active.data.current?.sortable.containerId;
 			const draggedToListTitle = over.data.current?.sortable.containerId;
-			
-			const draggedFromListId = getTodoListIdFromTitle( draggedFromListTitle );
 			const draggedToListId = getTodoListIdFromTitle( draggedToListTitle );
 			
 			setDraggedOverListId( draggedToListId ? draggedToListId : null );
