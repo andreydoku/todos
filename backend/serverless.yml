@@ -91,6 +91,24 @@ functions:
       - httpApi:
           path: /todos
           method: GET
+  getSortOrder:
+    handler: src/Controller.getSortOrder
+    name: ${self:service}-getSortOrder-${self:provider.stage}
+    timeout: 5
+    memorySize: 128
+    events:
+      - httpApi:
+          path: /sortOrder
+          method: GET
+  updateSortOrder:
+    handler: src/Controller.updateSortOrder
+    name: ${self:service}-updateSortOrder-${self:provider.stage}
+    timeout: 5
+    memorySize: 128
+    events:
+      - httpApi:
+          path: /sortOrder
+          method: POST
 
 resources:
   Resources:

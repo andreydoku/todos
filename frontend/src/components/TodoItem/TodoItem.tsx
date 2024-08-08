@@ -21,8 +21,10 @@ function TodoItem({ todo , pickedUp=false }: TodoItemProps){
 	if( todo.done ) cn += " done";
 	if( pickedUp ) cn += " picked-up";
 	
-	const { doneChanged , titleChanged , dateChanged , deleteClicked } = useTodos()
+	const { doneChanged , titleChanged , dateChanged , deleteClicked , sortOrder } = useTodos();
 
+	const sortIndex = sortOrder.findIndex( id => todo.id == id );
+	
 	return(
 		
 		<div className={cn}>
@@ -37,6 +39,7 @@ function TodoItem({ todo , pickedUp=false }: TodoItemProps){
 				onTitleChange={ (newTitle) => titleChanged( todo.id , newTitle ) }
 			/>
 			
+			<p>{sortIndex}</p>
 			
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
 				<ButtonDatePicker

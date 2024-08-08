@@ -36,6 +36,7 @@ export default function App() {
 						<Route path="/calendar" element={<CalendarPage />} />
 						
 						<Route path="*" element={<ErrorPage />} />
+						
 					</Routes>
 				</main>
 					

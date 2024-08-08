@@ -4,6 +4,7 @@ import { Todo } from "./Todo";
 import { Service } from "./Service";
 import { validateDate, validateTodoUpdateRequest } from './Validator';
 import { TodoUpdateRequest } from './TodoUpdateRequest';
+import { SortOrder } from './SortOrder';
 
 
 
@@ -34,6 +35,7 @@ export const getTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent
 		
 		const response = {
 			statusCode: 200,
+			headers: CORS_HEADERS,
 			body: JSON.stringify( todo )
 		};
 		return response;
@@ -251,3 +253,79 @@ export const getAllTodos: APIGatewayProxyHandler = async (event: APIGatewayProxy
 		};
 	}
 };
+
+
+
+
+
+// GET /sortOrder
+export const getSortOrder: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+	
+	try {
+		const sortOrder:SortOrder = await service.getSortOrder();
+		
+		const response = {
+			statusCode: 200,
+			headers: CORS_HEADERS,
+			body: JSON.stringify( sortOrder )
+		};
+		return response;
+	}
+	catch(e: any) {
+
+		console.error(e);
+
+		return {
+			statusCode: 500,
+			body: JSON.stringify({
+				message: "Failed to get sortOrder.",
+				errorMsg: e.message,
+				errorStack: e.stack,
+			})
+		};
+	}
+	
+}
+
+// POST /sortOrder
+export const updateSortOrder: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+	
+	console.log( "received POST /sortOrder request." );
+	
+	if( !event.body ){
+		return {
+			statusCode: 400,
+			body: JSON.stringify({
+				message: "Request body required",
+			})
+		};
+	}
+	
+	const requestBody = JSON.parse(event.body);
+	
+	try {
+		
+		const result = await service.updateSortOrder(requestBody);
+		
+		return {
+			statusCode: 200,
+			headers: CORS_HEADERS,
+			body: JSON.stringify(result)
+		};
+		
+	}
+	catch(e: any) {
+
+		console.error(e);
+
+		return {
+			statusCode: 500,
+			body: JSON.stringify({
+				message: "Failed to update sort order.",
+				errorMsg: e.message,
+				errorStack: e.stack,
+			})
+		};
+	}
+	
+}

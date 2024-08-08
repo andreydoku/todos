@@ -12,45 +12,57 @@ type TodoProviderProps = {
 
 export type TodosState = {
 	todos: Todo[],
-	sortOrder: string[]
 	doneChanged: ( id:string , newDone:boolean ) => Promise<void>,
 	titleChanged: ( id:string , newTitle:string ) => Promise<void>,
 	dateChanged: ( id:string , newDate:string|null ) => Promise<void>,
 	deleteClicked: ( id:string ) => Promise<void>,
 	addTask: (title:string, doDate?:string) => Promise<void>,
+	
+	sortOrder: string[],
+	moveTodoSortOrder: ( todoMovedId:string , todoMovedOntoId:string ) => Promise<void>,
 }
 
 
 const TodoContext = createContext<TodosState>({
 
 	todos: [],
-	sortOrder: [],
 	doneChanged: async (_id: string, _: boolean) => {},
 	titleChanged: async ( _id:string , _newTitle:string ) => {},
 	dateChanged: async ( _id:string , _newDate:string|null ) => {},
 	deleteClicked: async ( _id:string ) => {},
 	addTask: async ( _title:string , _doDate?:string ) => {},
+	
+	sortOrder: [],
+	moveTodoSortOrder: async (_todoMovedId: string, _todoMovedOntoId: string) => {},
 
 });
 
 export default function TodoProvider({ children }: TodoProviderProps) {
 	
-	const [todos, setTodos] = useState<Todo[]>([]);
+	const [todos, setTodos] = useState<Todo[]>( [] );
 	const [_, forceUpdate] = useReducer(x => x + 1, 0);
 	
-	const [sortOrder, _setSortOrder] = useState([
-		"bcc4bd70-816e-42a9-a62e-61a6d3a4e974", //clean room
-		"8cd3e932-c155-40a5-965e-7abcc78f39f8", //clean kitchen
-		"87809db0-017a-49ae-9787-ed9bc6cc5b06", //update resume
-		"4548c9fd-0a63-4f80-85ec-ed6fbda61ee1", //apply for jobs
-		"71fa9826-3c83-4a1d-9b37-9e7f94901c05", //buy workout clothes
-		"d850329b-bde1-44d8-b8c5-ffd7383e2d39", //workout
-	]);
+	const [sortOrder, setSortOrder] = useState<string[]>( [] );
+	console.log({ todos , sortOrder });
 	
 	
 	useEffect( () => {
+		
+		fetchSortOrder();
 		fetchAllTodos();
+		
+		
 	} , [] );
+	useEffect( () => {
+		
+		if( todos.length == 0 ){
+			return;
+		}
+		
+		const sortedTodos = applySortOrder( todos , sortOrder );
+		setTodos( sortedTodos );
+		
+	} , [sortOrder] );
 	
 	const todosRestClient:RestClient = new RestClient();
 	// const todosRestClient:RestClient = new RestClientMocked();
@@ -60,10 +72,17 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		
 		const fetchedTodos:Todo[] = await todosRestClient.getAllTodos();
 		const sortedTodos = applySortOrder( fetchedTodos , sortOrder );
-		
 		setTodos( sortedTodos );
 		
 	};
+	const fetchSortOrder = async () => {
+		
+		const fetchedSortOrder:string[] = await todosRestClient.getSortOrder();
+		setSortOrder( fetchedSortOrder );
+		
+		
+	};
+	
 	function applySortOrder( todos:Todo[] , sortOrder:string[] ): Todo[]{
 		
 		if( todos.length != sortOrder.length ){
@@ -89,17 +108,59 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 	}
 	
 	
-	const updateTodo = async ( id:string , todoUpdateRequest:TodoUpdateRequest ) => {
+	async function moveTodoSortOrder( todoMovedId:string , todoMovedOntoId:string ){
 		
+		if( todoMovedId == todoMovedOntoId ){
+			//item wasnt moved
+			return;
+		}
+		
+		const todoMoved = todos.find( todo => todo.id == todoMovedId );
+		if( !todoMoved ){
+			console.error( "moveTodoSortOrder - failed to find todo with ID: " + todoMovedId );
+			return;
+		}
+		const todoMovedOnto = todos.find( todo => todo.id == todoMovedOntoId );
+		if( !todoMovedOnto ){
+			console.error( "moveTodoSortOrder - failed to find todo with ID: " + todoMovedOntoId );
+			return;
+		}
+		
+		console.log( "sorting moved: " + todoMoved.title + " => " + todoMovedOnto.title );
+		
+		
+		const fromIndex = sortOrder.indexOf( todoMovedId );
+		const toIndex = sortOrder.indexOf( todoMovedOntoId );
+		
+		sortOrder.splice( fromIndex , 1 );
+    	sortOrder.splice( toIndex , 0 , todoMovedId );
+		
+		todos.splice( fromIndex , 1 );
+    	todos.splice( toIndex , 0 , todoMoved );
+		
+		setSortOrder( sortOrder );
+		setTodos( todos );
+		
+		
+		
+		try{
+			const updatedSortOrder:string[] = await todosRestClient.updateSortOrder({ sortOrder });
+			setSortOrder( updatedSortOrder );
+		}
+		catch( error ){
+			forceUpdate();
+			throw error;
+		}
+		
+	}
+	
+	
+	const updateTodo = async ( id:string , todoUpdateRequest:TodoUpdateRequest ) => {
 		
 		const index = todos.findIndex( todo => id == todo.id );
 		const updatedTodo = todos[index];
 		
 		applyTodoUpdateRequest( updatedTodo , todoUpdateRequest );
-		// if( todoUpdateRequest.title  !== undefined )	updatedTodo.title = todoUpdateRequest.title;
-		// if( todoUpdateRequest.doDate !== undefined )	updatedTodo.doDate = todoUpdateRequest.doDate;
-		// if( todoUpdateRequest.done   !== undefined )	updatedTodo.done = todoUpdateRequest.done;
-
 		console.log({ todoUpdateRequest , updatedTodo })
 		
 		todos[index] = updatedTodo;
@@ -194,17 +255,17 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 	// Example use case:
 	// const { todos, doneChanged , titleChanged, dateChanged, deleteClicked, addTask } = useTodos();
 
-
-	
 	return (
 		<TodoContext.Provider value={{
 			todos,
-			sortOrder,
 			doneChanged,
 			titleChanged,
 			dateChanged,
 			deleteClicked,
-			addTask
+			addTask,
+			
+			sortOrder,
+			moveTodoSortOrder,
 		}}>
 			{children}
 		</TodoContext.Provider>

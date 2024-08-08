@@ -7,6 +7,7 @@ import { Todo } from "../../models/Todo";
 import TodoItem from "../TodoItem/TodoItem";
 import { TodoListProps } from "./TodoList/TodoList";
 import { getChildrenByTypeDeep } from "../../utils/utils";
+import { useTodos } from "../../providers/TodoProvider";
 
 
 export type TodoBoardState = {
@@ -26,13 +27,19 @@ type TodoBoardProps = {
 export default function TodoBoard({ children }: TodoBoardProps) {
 	
 	const [draggedTodo, setDraggedTodo] = useState<Todo|null>( null );
+	const [draggedFromListId, setDraggedFromListId] = useState<string|null>( null );
+	
+	const [draggedOverTodoId, setDraggedOverTodoId] = useState<string|null>( null );
 	const [draggedOverListId, setDraggedOverListId] = useState<string|null>( null );
 	
 	
 	//TODO - look into useCallback and useMemo
 	const todoListPropsArray:TodoListProps[] = getChildrenByTypeDeep( children , "TodoList" )
-													.map( child => child.props as TodoListProps );
-
+		.map( child => child.props as TodoListProps );
+	
+		
+	const { moveTodoSortOrder } = useTodos();
+	
 	
 	
 	function handleDragStart({ active }: DragStartEvent){
@@ -40,6 +47,18 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 		
 		const draggedTodo = active.data.current?.value as Todo;
 		setDraggedTodo( draggedTodo );
+		
+		const draggedFromThing = active.data.current;
+		if( draggedFromThing == undefined ){
+			console.log( "handleDragStart - active.data.current is undefined" );
+			return;
+		}
+		
+		const draggedFromListId = draggedFromThing.sortable.containerId;
+		
+		console.log( "dragged from: " + draggedFromListId );
+		setDraggedFromListId( draggedFromListId ?? null );
+		
 		
 	}
 	function handleDragOver({ active , over }: DragOverEvent){
@@ -60,9 +79,11 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 		if( draggedOverThing.type == "Todo" ){
 			//console.log( {"draggedOverThing.value": draggedOverThing.value } )
 			
-			const draggedToListTitle = over.data.current?.sortable.containerId;
-			const draggedToListId = getTodoListIdFromTitle( draggedToListTitle );
+			const draggedToListId = draggedOverThing.sortable.containerId;
+			const draggedToIndex = draggedOverThing.sortable.index;
+			const draggedOverTodoId = draggedOverThing.sortable.items[draggedToIndex];
 			
+			setDraggedOverTodoId( draggedOverTodoId );
 			setDraggedOverListId( draggedToListId ? draggedToListId : null );
 			
 			//const draggedOverTodo = draggedOverThing.value as Todo;
@@ -85,72 +106,59 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 			return;
 		}
 		
+		if( !draggedTodo ){
+			console.error( "handleDragEnd - draggedTodo is null" )
+			return;
+		}
+		
+		if( !draggedFromListId ){
+			console.error( "handleDragEnd - draggedFromListId is null" )
+			return;
+		}
+		
 		const draggedOverList:TodoListProps|undefined = getTodoListById( draggedOverListId );
-		if( draggedOverList && draggedTodo ){
-			
-			//draggedOverList.props.blah();
+		if( !draggedOverList ){
+			console.error( "handleDragEnd - draggedOverList not found" )
+			return;
+		}
+		
+		
+		
+		
+		//draggedOverList.droppedOn( draggedTodo );
+		
+		//moved to another list
+		if( draggedOverList.id != draggedFromListId ){
 			draggedOverList.droppedOn( draggedTodo );
 		}
-		else{
-			console.error( "handleDragEnd - draggedOverList not found" )
+		
+		//sorted within same list
+		if( draggedOverList.id == draggedFromListId ){
+			
+			if( draggedOverTodoId == null ){
+				console.error( "draggedOverTodoId is null" );
+			}
+			else{
+				moveTodoSortOrder( draggedTodo.id , draggedOverTodoId );
+			}
+			
+			
+			
 		}
 		
-		
+		setDraggedOverTodoId( null );
 		setDraggedOverListId( null );
 		
-		
-		
 	}
 	
 	
-	
-	function getTodoListIdFromTitle( title:string ){
-		
-		return todoListPropsArray.find( todoListProp => todoListProp.title == title )?.id;
-		
-		
-		// let id = null;
-		
-		// Children.forEach( children, child  =>{
-		// 	//console.log(child);
-			
-		// 	//@ts-ignore
-		// 	const type = child?.type.name;
-			
-		// 	if( type == "TodoList" ){
-				
-		// 		//@ts-ignore
-		// 		const todoListTitle = child.props.title;
-				
-		// 		//@ts-ignore
-		// 		const listtodoListId = child.props.id;
-				
-		// 		if( todoListTitle == title ){
-		// 			id = listtodoListId;
-		// 		}
-		// 	}
-			
-		// })
-		
-		// return id;
-	}
 	
 	function getTodoListById( id:string ): TodoListProps|undefined{
 		
-		//return todoListPropsArray.find( todoListProp => todoListProp.id == id );
-		
-		const output = todoListPropsArray.find( todoListProp => todoListProp.id == id );
-		
-		if( output == undefined ){
-			console.log("failed to find todolist by id: " + id);
-			console.log({ todoListPropsArray })
-			
-		}
-			
-			
-		return output;
+		return todoListPropsArray.find( todoListProp => todoListProp.id == id );
 		
 	}
+	
 	
 	
 	const sensors = useSensors(

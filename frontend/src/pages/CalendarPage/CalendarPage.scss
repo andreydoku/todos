@@ -92,7 +92,11 @@
 		
 	}
 	.todo-item{
-		grid-template-columns: 14px auto 20px;
+		
+		font-size: 10px;
+		
+		//grid-template-columns: 14px auto 20px;
+		grid-template-columns: 14px auto 20px 20px;
 		padding: 2px 4px;
 		gap: 2px;
 		border-radius: 3px;

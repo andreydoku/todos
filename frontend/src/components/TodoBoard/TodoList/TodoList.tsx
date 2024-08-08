@@ -47,7 +47,7 @@ export default function TodoList({ id , title , filter , addTaskClicked , classN
 			</div>
 			
 			<SortableContext
-				id={title}
+				id={id}
 				items={filteredTodos}
 				strategy={verticalListSortingStrategy}
 				>
