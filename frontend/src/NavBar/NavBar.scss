@@ -7,13 +7,20 @@
 	height: 100%;
 	//width: 300px;
 	z-index: 100;
+	padding: 30px;
 	
 	
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
-	gap: 20px;
-	padding: 30px;
+	justify-content: space-between;
+	
+	.links{
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+		
+	}
 	
 	.nav-link{
 		color: #242424;

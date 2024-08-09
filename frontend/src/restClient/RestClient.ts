@@ -2,7 +2,16 @@ import { SortOrder } from "../models/SortOrder";
 import { Todo } from "../models/Todo";
 import { TodoUpdateRequest } from "../models/TodoUpdateRequest";
 
-const hostUrl = "https://keiy978fn5.execute-api.us-east-2.amazonaws.com";
+const HOST_URL_DEV = "https://keiy978fn5.execute-api.us-east-2.amazonaws.com";
+const HOST_URL_PROD = "https://8dlyt37xud.execute-api.us-east-2.amazonaws.com";
+
+const env = import.meta.env.VITE_ENV;
+let hostUrl = HOST_URL_DEV;
+switch( env ){
+	case "local": hostUrl = HOST_URL_DEV; break;
+	case "dev"  : hostUrl = HOST_URL_DEV; break;
+	case "prod" : hostUrl = HOST_URL_PROD; break;
+}
 
 
 export class RestClient {

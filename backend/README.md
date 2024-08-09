@@ -1,6 +1,7 @@
 
 API Invoke URL
 	dev: https://keiy978fn5.execute-api.us-east-2.amazonaws.com
+	prod: https://8dlyt37xud.execute-api.us-east-2.amazonaws.com
 	
 Lambdas
 	[todos-getTodo-dev](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/todos-getTodo-dev)
@@ -9,9 +10,14 @@ Lambdas
 	[todos-deleteTodo-dev](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/todos-deleteTodo-dev)
 	[todos-getAllTodos-dev](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/todos-getAllTodos-dev)
 
+Tables
+	[todos-todosTable-dev](https://us-east-2.console.aws.amazon.com/dynamodbv2/home?region=us-east-2#table?name=todos-todosTable-dev)
+	[todos-todosTable-prod](https://us-east-2.console.aws.amazon.com/dynamodbv2/home?region=us-east-2#table?name=todos-todosTable-prod)
+	
 
 to deploy
 	```sls deploy```
+	```sls deploy -s prod```
 
 to deploy just 1 function
 	```sls deploy -f getTodo```
