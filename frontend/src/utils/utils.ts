@@ -36,12 +36,30 @@ export function getDayOfWeek(date:Dayjs){
 }
 
 
-export function isSameDate( date1:Dayjs , date2:Dayjs ){
+export function isSameDate( date1:Dayjs , date2:Dayjs ): boolean {
 	return date1.format('YYYYMMDD') === date2.format('YYYYMMDD');
 }
 export function isToday( date1:Dayjs ){
 	const today = dayjs();
 	return isSameDate( date1 , today );
+}
+export function isSameDayOrAfter( date1:Dayjs , date2:Dayjs ): boolean {
+	
+	return date1.isSame( date2 , "day" ) || 
+		   date1.isAfter( date2 , "day" );
+	
+}
+export function isSameDayOrBefore( date1:Dayjs , date2:Dayjs ): boolean {
+	
+	return date1.isSame( date2 , "day" ) || 
+		   date1.isBefore( date2 , "day" );
+	
+}
+export function isDayWithinRange( date:Dayjs , dateFrom:Dayjs , dateTo:Dayjs ): boolean {
+	
+	return isSameDayOrAfter( date , dateFrom ) &&
+		   isSameDayOrBefore( date , dateTo )
+	
 }
 
 

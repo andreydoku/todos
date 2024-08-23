@@ -45,6 +45,12 @@ export class Service{
 		
 		await docClient.send( putCommand );
 		
+		
+		const sortOrder:SortOrder = await this.getSortOrder();
+		sortOrder.sortOrder.push( todo.id );
+		await this.updateSortOrder(sortOrder);
+		
+		
 		return todo;
 		
 	}
@@ -77,6 +83,12 @@ export class Service{
 		});
 		
 		await docClient.send( deletedCommand );
+		
+		
+		const sortOrder:SortOrder = await this.getSortOrder();
+		sortOrder.sortOrder = sortOrder.sortOrder.filter( id1 => id1 != id );
+		await this.updateSortOrder(sortOrder);
+		
 		
 		return todo;
 		

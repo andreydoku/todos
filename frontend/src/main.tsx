@@ -21,8 +21,14 @@ import './index.scss';
 export default function App() {
 	
 	useEffect(() => {
+		
+		let title = "Andrey's Todos";
+		
 		const env = import.meta.env.VITE_ENV;
-		document.title = `Andrey's Todos (${env})`;
+		if( env ){
+			title += ` (${env})`
+		}
+		document.title = title;
 	}, []);
 	
 	return (

@@ -48,42 +48,36 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 	
 	useEffect( () => {
 		
-		fetchSortOrder();
-		fetchAllTodos();
-		
+		const fetchData = async () => {
+			const fetchedTodos = await fetchAllTodos();
+			const fetchedSortOrder = await fetchSortOrder();
+			
+			const sortedTodos = applySortOrder( fetchedTodos , fetchedSortOrder );
+			
+			setTodos( sortedTodos );
+			setSortOrder( fetchedSortOrder );
+			
+		}
+		fetchData();
 		
 	} , [] );
-	useEffect( () => {
-		
-		if( todos.length == 0 ){
-			return;
-		}
-		
-		const sortedTodos = applySortOrder( todos , sortOrder );
-		setTodos( sortedTodos );
-		
-	} , [sortOrder] );
 	
 	const todosRestClient:RestClient = new RestClient();
 	// const todosRestClient:RestClient = new RestClientMocked();
 	
-	
-	const fetchAllTodos = async () => {
-		
+	async function fetchAllTodos():Promise<Todo[]> {
 		const fetchedTodos:Todo[] = await todosRestClient.getAllTodos();
-		const sortedTodos = applySortOrder( fetchedTodos , sortOrder );
-		setTodos( sortedTodos );
-		
-	};
-	const fetchSortOrder = async () => {
+		return fetchedTodos;
+	}
+
+	async function fetchSortOrder(): Promise<string[]> {
 		
 		const fetchedSortOrder:string[] = await todosRestClient.getSortOrder();
-		setSortOrder( fetchedSortOrder );
-		
+		return fetchedSortOrder;
 		
 	};
 	
-	function applySortOrder( todos:Todo[] , sortOrder:string[] ): Todo[]{
+	function applySortOrder( todos:Todo[] , sortOrder:string[] ): Todo[] {
 		
 		if( todos.length != sortOrder.length ){
 			console.error( "todos count and sortOrder count mismatch!" );
@@ -105,6 +99,8 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		}
 		
 		return sortedTodos;
+		
+		
 	}
 	
 	
@@ -229,6 +225,9 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		const newTodos = todos.filter( todo => todo.id !== deletedTodo.id );
   		setTodos(newTodos);
 		
+		const sortOrder = await fetchSortOrder();
+		setSortOrder( sortOrder );
+		
 	}
 	
 	async function addTask( title:string , doDate?:string){
@@ -248,6 +247,11 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 		newTodos.push( addedTodo );
 		
 		setTodos( newTodos );
+		
+		
+		const sortOrder = await fetchSortOrder();
+		setSortOrder( sortOrder );
+		
 		
 	}
 

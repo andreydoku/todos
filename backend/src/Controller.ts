@@ -70,7 +70,24 @@ export const createTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		};
 	}
 	
-	const requestBody = JSON.parse(event.body);
+	let requestBody;
+	try {
+        requestBody = JSON.parse(event.body);
+    } 
+	catch (e: any) {
+        
+		console.error(e);
+
+		return {
+			statusCode: 400,
+			body: JSON.stringify({
+				message: "Request body is not a valid JSON format",
+				errorMsg: e.message,
+				errorStack: e.stack,
+			})
+		};
+		
+    }
 	
 	const validationError = validateTodoUpdateRequest(requestBody);
 	if( validationError ){
@@ -138,7 +155,24 @@ export const updateTodo: APIGatewayProxyHandler = async(event: APIGatewayProxyEv
 		};
 	}
 	
-	const requestBody = JSON.parse(event.body);
+	let requestBody;
+	try {
+        requestBody = JSON.parse(event.body);
+    } 
+	catch (e: any) {
+        
+		console.error(e);
+
+		return {
+			statusCode: 400,
+			body: JSON.stringify({
+				message: "Request body is not a valid JSON format",
+				errorMsg: e.message,
+				errorStack: e.stack,
+			})
+		};
+		
+    }
 	
 	const validationError = validateTodoUpdateRequest(requestBody);
 	if( validationError ){
@@ -301,7 +335,24 @@ export const updateSortOrder: APIGatewayProxyHandler = async(event: APIGatewayPr
 		};
 	}
 	
-	const requestBody = JSON.parse(event.body);
+	let requestBody;
+	try {
+        requestBody = JSON.parse(event.body);
+    } 
+	catch (e: any) {
+        
+		console.error(e);
+
+		return {
+			statusCode: 400,
+			body: JSON.stringify({
+				message: "Request body is not a valid JSON format",
+				errorMsg: e.message,
+				errorStack: e.stack,
+			})
+		};
+		
+    }
 	
 	try {
 		
