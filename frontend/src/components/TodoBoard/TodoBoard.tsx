@@ -37,6 +37,8 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 	const todoListPropsArray:TodoListProps[] = getChildrenByTypeDeep( children , "TodoList" )
 		.map( child => child.props as TodoListProps );
 	
+	console.log({ todoListPropsArray });
+		
 		
 	const { moveTodoSortOrder } = useTodos();
 	
@@ -118,7 +120,10 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 		
 		const draggedOverList:TodoListProps|undefined = getTodoListById( draggedOverListId );
 		if( !draggedOverList ){
-			console.error( "handleDragEnd - draggedOverList not found" )
+			console.error( "handleDragEnd - draggedOverList not found"
+				+ "\n\t" + "draggedOverListId: " + draggedOverListId
+				+ "\n\t" + todoListPropsArray.map( todoListProp => todoListProp.id ).join(", ")
+			)
 			return;
 		}
 		
