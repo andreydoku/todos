@@ -96,7 +96,9 @@ export function getChildrenByTypeDeep( children , typeSearched:string ){
 			if( child.props.className ) toLog.className = child.props.className;
 			//@ts-ignore
 			if( child.props.id ) toLog.id = child.props.id;
-			console.log(toLog);
+			//@ts-ignore
+			toLog.child = child;
+			console.log( toLog );
 			
 			
 			if( type == typeSearched ){
