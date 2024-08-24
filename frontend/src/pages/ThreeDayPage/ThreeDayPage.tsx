@@ -43,21 +43,21 @@ export default function ThreeDayPage() {
 			<TodoBoard>
 				
 				<TodoList
-					id={dayString1}
+					id={ "TodoList-" + dayString1 }
 					title="Today"
 					filter={ todo => todo.doDate == dayString1 }
 					droppedOn={ todo => droppedTodoOnList(todo,dayString1) }
 					addTaskClicked={ () => addTask( "new task" , dayString1 )}
 				/>
 				<TodoList
-					id={dayString2}
+					id={ "TodoList-" + dayString2 }
 					title="Tomorrow"
 					filter={ todo => todo.doDate == dayString2 }
 					droppedOn={ todo => droppedTodoOnList(todo,dayString2) }
 					addTaskClicked={ () => addTask( "new task" , dayString2 )}
 				/>
 				<TodoList
-					id={dayString3}
+					id={ "TodoList-" + dayString3 }
 					title={getDayOfWeek(day3)}
 					filter={ todo => todo.doDate == dayString3 }
 					droppedOn={ todo => droppedTodoOnList(todo,dayString3) }

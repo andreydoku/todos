@@ -41,7 +41,7 @@ export default function CalendarPage() {
 				<div className="backlog-column">
 					<Header text="Backlog"/>
 					<TodoList
-						id="backlog"
+						id="TodoList-backlog"
 						title=""
 						filter={ todo => !todo.doDate && !todo.done }
 						droppedOn={ todo => dateChanged( todo.id , null ) }
@@ -62,7 +62,7 @@ export default function CalendarPage() {
 						
 						return( 
 							<TodoList key={dayString}
-								id={dayString}
+								id={ "TodoList-" + dayString }
 								title={ getDayLabel(day) }
 								filter={ todo => todo.doDate == dayString }
 								droppedOn={ todo => droppedTodoOnList(todo,dayString) }

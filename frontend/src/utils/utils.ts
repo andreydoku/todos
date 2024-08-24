@@ -64,7 +64,7 @@ export function isDayWithinRange( date:Dayjs , dateFrom:Dayjs , dateTo:Dayjs ): 
 
 
 //@ts-ignore
-export function getChildrenByTypeDeep( children , typeSearched:string ){
+export function getChildrenByIdDeep( children , idStartsWith:string ){
 	
 	//@ts-ignore
 	let output = [];
@@ -79,35 +79,20 @@ export function getChildrenByTypeDeep( children , typeSearched:string ){
 	children.forEach( child => {
 		
 		if( Array.isArray(child) ){
-			const nestedChildren = getChildrenByTypeDeep( child , typeSearched );
+			const nestedChildren = getChildrenByIdDeep( child , idStartsWith );
 			//@ts-ignore
 			output = [ ...output , ...nestedChildren ];
 		}
 		else{
-			let type = child.type;
-			if( child.type.name ){
-				type = child.type.name;
-			}
 			
-			let toLog = { type };
-			//@ts-ignore
-			if( child.props.text ) toLog.text = child.props.text;
-			//@ts-ignore
-			if( child.props.className ) toLog.className = child.props.className;
-			//@ts-ignore
-			if( child.props.id ) toLog.id = child.props.id;
-			//@ts-ignore
-			toLog.child = child;
-			console.log( toLog );
-			
-			
-			if( type == typeSearched ){
+			const id = child.props.id;
+			if( id && id.startsWith(idStartsWith) ){
 				output.push( child );
 			}
 			
 			const children = child.props?.children;
 			if( children ){
-				const nestedChildren = getChildrenByTypeDeep( children , typeSearched );
+				const nestedChildren = getChildrenByIdDeep( children , idStartsWith );
 				//@ts-ignore
 				output = [ ...output , ...nestedChildren ];
 			}

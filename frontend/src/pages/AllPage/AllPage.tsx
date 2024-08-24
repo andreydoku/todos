@@ -22,7 +22,7 @@ export default function AllPage() {
 			<TodoBoard>
 				
 				<TodoList
-					id="all"
+					id="TodoList-all"
 					title=""
 					filter={ (_todo) => true }
 					droppedOn={ (_todo) => {} }

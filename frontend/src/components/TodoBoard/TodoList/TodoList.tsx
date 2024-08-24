@@ -18,6 +18,10 @@ export type TodoListProps = {
 }
 export default function TodoList({ id , title , filter , addTaskClicked , className }: TodoListProps) {
 	
+	if( !id.startsWith("TodoList") ){
+		console.error( "TodoList ID: " + id + "   ... must start with 'TodoList'!" );
+	}
+	
 	const { setNodeRef } = useDroppable({
 		id: id,
 		data: { type: "TodoList" , value: {id,title} }

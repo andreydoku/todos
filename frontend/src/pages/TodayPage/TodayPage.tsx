@@ -26,14 +26,14 @@ export default function TodayPage() {
 			<TodoBoard>
 				
 				<TodoList
-					id="today"
+					id="TodoList-today"
 					title="Today"
 					filter={ todo => todo.doDate == todayDateString }
 					droppedOn={ todo => dateChanged( todo.id , todayDateString ) }
 					addTaskClicked={ () => addTask( "new task" , todayDateString )}
 				/>
 				<TodoList
-					id="backlog"
+					id="TodoList-backlog"
 					title="Backlog"
 					filter={ todo => !todo.doDate && !todo.done }
 					droppedOn={ todo => dateChanged( todo.id , null ) }

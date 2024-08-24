@@ -6,7 +6,7 @@ import { restrictToWindowEdges} from '@dnd-kit/modifiers';
 import { Todo } from "../../models/Todo";
 import TodoItem from "../TodoItem/TodoItem";
 import { TodoListProps } from "./TodoList/TodoList";
-import { getChildrenByTypeDeep } from "../../utils/utils";
+import { getChildrenByIdDeep } from "../../utils/utils";
 import { useTodos } from "../../providers/TodoProvider";
 
 
@@ -34,10 +34,10 @@ export default function TodoBoard({ children }: TodoBoardProps) {
 	
 	
 	//TODO - look into useCallback and useMemo
-	const todoListPropsArray:TodoListProps[] = getChildrenByTypeDeep( children , "TodoList" )
+	const todoListPropsArray:TodoListProps[] = getChildrenByIdDeep( children , "TodoList" )
 		.map( child => child.props as TodoListProps );
 	
-	console.log({ todoListPropsArray });
+	//console.log({ todoListPropsArray });
 		
 		
 	const { moveTodoSortOrder } = useTodos();

@@ -43,7 +43,7 @@ export default function TodoProvider({ children }: TodoProviderProps) {
 	const [_, forceUpdate] = useReducer(x => x + 1, 0);
 	
 	const [sortOrder, setSortOrder] = useState<string[]>( [] );
-	console.log({ todos , sortOrder });
+	//console.log({ todos , sortOrder });
 	
 	
 	useEffect( () => {
