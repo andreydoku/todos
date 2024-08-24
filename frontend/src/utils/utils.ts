@@ -73,6 +73,8 @@ export function getChildrenByTypeDeep( children , typeSearched:string ){
 		children = [children];
 	}
 	
+	
+	
 	//@ts-ignore
 	children.forEach( child => {
 		
@@ -86,6 +88,13 @@ export function getChildrenByTypeDeep( children , typeSearched:string ){
 			if( child.type.name ){
 				type = child.type.name;
 			}
+			
+			let toLog = { type };
+			if( child.props.text ) toLog.text = child.props.text;
+			if( child.props.className ) toLog.className = child.props.className;
+			if( child.props.id ) toLog.id = child.props.id;
+			console.log(toLog);
+			
 			
 			if( type == typeSearched ){
 				output.push( child );

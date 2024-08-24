@@ -13,7 +13,6 @@ export default function NavBar() {
 	
 	const todayDate:Dayjs = dayjs();
 	const dayNumber = todayDate.get("date");
-	console.log({ dayNumber });
 	
 	const { todos } = useTodos();
 	const allCount = todos.length;
