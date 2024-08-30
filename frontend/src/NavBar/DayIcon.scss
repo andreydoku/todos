@@ -1,0 +1,16 @@
+.day-icon{
+	position: relative;
+	height: 24px;
+	width: 32px;
+	display: flex;
+	
+	.number{
+		font-size: 12px;
+		font-weight: 700;
+		position: absolute;
+		top: 64%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	
+}

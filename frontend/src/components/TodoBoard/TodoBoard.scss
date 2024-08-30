@@ -3,5 +3,5 @@
 	
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
-	gap: 40px;	
+	gap: var(--spacing-1);	
 }

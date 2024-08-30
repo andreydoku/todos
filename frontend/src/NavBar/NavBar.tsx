@@ -1,15 +1,36 @@
-import { NavLink } from "react-router-dom";
+
 import dayjs, { Dayjs } from "dayjs";
+import { getMondayOf, isDayWithinRange, stringToDatejs } from "../utils/utils";
 
 import { BiColumns } from "react-icons/bi";
 import { MdCalendarMonth } from "react-icons/md";
 import { IoMdClipboard } from "react-icons/io";
+import { useTodos } from "../providers/TodoProvider";
+
+import { useEffect, useState } from "react";
 
 import "./NavBar.scss";
 
 export default function NavBar() {
 	
-	const env = import.meta.env.VITE_ENV;
+	
+	const [expanded, setExpanded] = useState<boolean>( true );
+	
+	const { height, width } = useWindowDimensions();
+	
+	
+	useEffect(() => {
+		console.log("width changed: " + width);
+		
+		if( width < 1200 && expanded ){
+			console.log("width: " + width);
+			
+			setExpanded(false);
+		}
+		
+	}, [width])
+	
+	
 	
 	const todayDate:Dayjs = dayjs();
 	const dayNumber = todayDate.get("date");
@@ -20,48 +41,34 @@ export default function NavBar() {
 	const threeDayCount = getCountForDateRange( todayDate , todayDate.add(2,"day") );
 	const calendarCount = getCountForDateRange( getMondayOf( todayDate ) , todayDate.add(20,"day") );
 	
+	let cn = "nav-bar";
+	if( expanded )  cn += " expanded";
+	else			cn += " collapsed";
+	
 	return (
-		<div className='nav-bar'>
+		<aside className={ cn }>
 			
 			<div className="links">
-				<NavLink to="/all" className='nav-link'>
-					<IoMdClipboard />
-					<div className="mid">
-						<p className="nav-link-text">All</p>
-					</div>
-					<p className="count">{allCount}</p>
-				</NavLink>
 				
-				<NavLink to="/today" className='nav-link'>
-					<DayIcon number={ dayNumber }/>
-					<div className="mid">
-						<p className="nav-link-text">Today</p>
-					</div>
-					<p className="count">{todayCount}</p>
-				</NavLink>
 				
-				<NavLink to="/three-day" className='nav-link'>
-					<BiColumns />
-					<div className="mid">
-						<p className="nav-link-text">3-Day</p>
-					</div>
-					<p className="count">{threeDayCount}</p>
-				</NavLink>
+				<ExpandButton 
+					expanded={ expanded }
+					setExpanded={ setExpanded }
+				/>
 				
-				<NavLink to="/calendar" className='nav-link'>
-					<MdCalendarMonth />
-					<div className="mid">
-						<p className="nav-link-text">Calendar</p>
-					</div>
-					<p className="count">{calendarCount}</p>
-				</NavLink>
+				<NavBarLink expanded={expanded} icon={<IoMdClipboard />}               text="All"      count={allCount}      linkTo="/all"       />
+				<NavBarLink expanded={expanded} icon={<DayIcon number={ dayNumber }/>} text="Today"    count={todayCount}    linkTo="/today"     />
+				<NavBarLink expanded={expanded} icon={<BiColumns />}                   text="3-Day"    count={threeDayCount} linkTo="/three-day" />
+				<NavBarLink expanded={expanded} icon={<MdCalendarMonth />}             text="Calendar" count={calendarCount} linkTo="/calendar"  />
+				
 			</div>
 			
+			<p style={{fontSize:"10px",textWrap:"wrap", textAlign:"center", position:"absolute", bottom: "20px", right: "20px", color: "white"}}>
+				{width} × {height} 
+			</p>
 			
-			
-			<p>{env}</p>
-			
-		</div>
+		
+		</aside>
 	)
 	
 	function getCountForDateRange( dateFrom:Dayjs , dateTo:Dayjs ){
@@ -87,22 +94,32 @@ export default function NavBar() {
 
 
 
-import { MdCalendarToday } from "react-icons/md";
-import { useTodos } from "../providers/TodoProvider";
-import { getMondayOf, isDayWithinRange, stringToDatejs } from "../utils/utils";
 
-function DayIcon({ number }: {number: number}){
+
+
+
+
+import { TbLayoutSidebarLeftExpand } from "react-icons/tb";
+import { TbLayoutSidebarLeftCollapse  } from "react-icons/tb";
+import NavBarLink from "./NavBarLink";
+import DayIcon from "./DayIcon";
+import useWindowDimensions from "../utils/useWindowDimensions";
+import { log } from "console";
+function ExpandButton({ expanded , setExpanded }: {expanded: boolean, setExpanded: (expanded:boolean)=>void }){
+	
+	const expandIcon = <TbLayoutSidebarLeftExpand />
+	const collapseIcon = <TbLayoutSidebarLeftCollapse  />
+	
 	
 	return(
+
 		
-		<div className="day-icon">
-			<MdCalendarToday />
-			<p className="number">
-				{number}
-			</p>
+		<div className="expand-button" onClick={ () => setExpanded(!expanded) }>
+			{ expanded ? collapseIcon : expandIcon }
 		</div>
-		
-	)
+	);
+	
+	
 }
 
 

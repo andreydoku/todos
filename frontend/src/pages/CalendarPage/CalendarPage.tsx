@@ -7,13 +7,25 @@ import { getMondayOf, isToday } from "../../utils/utils";
 import { Todo } from "../../models/Todo";
 
 import "./CalendarPage.scss";
+import useWindowDimensions from "../../utils/useWindowDimensions";
 
 
 export default function CalendarPage() {
 	
-	//const { todos , dateChanged , addTask } = useTodos();
 	
 	const title = "Calendar";
+	
+	const { height, width } = useWindowDimensions();
+	if( width < 800 ){
+		return(
+			<div className="calendar-page">
+				<h1 className="title">{title}</h1>
+				<p>No clue how to make this look good on mobile lol</p>
+			</div>
+		)
+	}
+	
+	
 	
 	const today:Dayjs = dayjs();
 	const thisMonday:Dayjs = getMondayOf( today );

@@ -31,6 +31,7 @@ export default function TodayPage() {
 					filter={ todo => todo.doDate == todayDateString }
 					droppedOn={ todo => dateChanged( todo.id , todayDateString ) }
 					addTaskClicked={ () => addTask( "new task" , todayDateString )}
+					hideDate
 				/>
 				<TodoList
 					id="TodoList-backlog"
@@ -38,6 +39,7 @@ export default function TodayPage() {
 					filter={ todo => !todo.doDate && !todo.done }
 					droppedOn={ todo => dateChanged( todo.id , null ) }
 					addTaskClicked={ () => addTask( "new task" )}
+					hideDate
 				/>
 				
 				

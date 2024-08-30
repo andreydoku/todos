@@ -10,6 +10,11 @@
 	}
 	.todo-board{
 		//height: 600px;
-		//grid-template-columns: 400px 400px 400px;
+		grid-template-columns: 1fr 1fr;
+		max-width: 1200px;
+		
+		@media screen and (max-width: 800px) {
+			grid-template-columns: 1fr;
+		}
 	}
 }

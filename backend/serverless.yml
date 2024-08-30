@@ -33,6 +33,7 @@ provider:
     cors:
       allowedOrigins:
         - http://localhost:5173
+        - http://192.168.4.22:5173
         - https://dev.db455rbvk2t2a.amplifyapp.com
         - https://main.db455rbvk2t2a.amplifyapp.com
       allowedHeaders:

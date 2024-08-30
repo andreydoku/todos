@@ -48,6 +48,7 @@ export default function ThreeDayPage() {
 					filter={ todo => todo.doDate == dayString1 }
 					droppedOn={ todo => droppedTodoOnList(todo,dayString1) }
 					addTaskClicked={ () => addTask( "new task" , dayString1 )}
+					hideDate
 				/>
 				<TodoList
 					id={ "TodoList-" + dayString2 }
@@ -55,6 +56,7 @@ export default function ThreeDayPage() {
 					filter={ todo => todo.doDate == dayString2 }
 					droppedOn={ todo => droppedTodoOnList(todo,dayString2) }
 					addTaskClicked={ () => addTask( "new task" , dayString2 )}
+					hideDate
 				/>
 				<TodoList
 					id={ "TodoList-" + dayString3 }
@@ -62,6 +64,7 @@ export default function ThreeDayPage() {
 					filter={ todo => todo.doDate == dayString3 }
 					droppedOn={ todo => droppedTodoOnList(todo,dayString3) }
 					addTaskClicked={ () => addTask( "new task" , dayString3 )}
+					hideDate
 				/>
 				
 				

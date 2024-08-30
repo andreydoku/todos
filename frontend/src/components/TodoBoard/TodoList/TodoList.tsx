@@ -14,9 +14,10 @@ export type TodoListProps = {
 	filter: (todo:Todo) => boolean
 	droppedOn: (todo:Todo) => void;
 	addTaskClicked: () => void
+	hideDate?: boolean
 	className?: string
 }
-export default function TodoList({ id , title , filter , addTaskClicked , className }: TodoListProps) {
+export default function TodoList({ id , title , filter , addTaskClicked , hideDate=false, className }: TodoListProps) {
 	
 	if( !id.startsWith("TodoList") ){
 		console.error( "TodoList ID: " + id + "   ... must start with 'TodoList'!" );
@@ -35,19 +36,16 @@ export default function TodoList({ id , title , filter , addTaskClicked , classN
 	//console.log({ myId: id , draggedOverListId , draggedOver })
 	
 	let cn = "todo-list";
-	if( draggedOver ){
-		cn += " dragged-over";
-	}
-	if( className ){
-		cn += " " + className;
-	}
+	if( draggedOver ) cn += " dragged-over";
+	if( className ) cn += " " + className;
+	if( hideDate )  cn += " hide-date";
 	
 	return (
 		<div className={cn} id={id} datatype="TodoList">
 			
 			<div className="title-bar">
 				<h2 className="title">{title}</h2>
-				<AddTaskButton2 onClick={addTaskClicked}/>
+				<AddTaskButton onClick={addTaskClicked}/>
 			</div>
 			
 			<SortableContext
@@ -62,6 +60,7 @@ export default function TodoList({ id , title , filter , addTaskClicked , classN
 						{ filteredTodos.map( (todo:Todo) => 
 							<SortableTodoItem key={todo.id} 
 								todo={todo}
+								hideDate={hideDate}
 							/>
 						) }
 					
@@ -77,9 +76,9 @@ import { FaPlus } from "react-icons/fa";
 type AddTaskButton2Props={
 	onClick: () => void
 }
-function AddTaskButton2({ onClick }: AddTaskButton2Props){
+function AddTaskButton({ onClick }: AddTaskButton2Props){
 	return(
-		<div className="add-task-button-2">
+		<div className="add-task-button">
 			<FaPlus onClick={onClick}/>
 		</div>
 	);

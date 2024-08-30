@@ -7,10 +7,11 @@ import { Todo } from "../../../../models/Todo";
 
 
 type SortableTodoItemProps = {
-	todo: Todo
+	todo: Todo,
+	hideDate: boolean
 };
 
-export default function SortableTodoItem({ todo }: SortableTodoItemProps) {
+export default function SortableTodoItem({ todo , hideDate=false }: SortableTodoItemProps) {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
 		id: todo.id, 
 		data:{ 
@@ -30,7 +31,7 @@ export default function SortableTodoItem({ todo }: SortableTodoItemProps) {
 	
 	return (
 		<div ref={setNodeRef} className={cn} style={style} {...attributes} {...listeners}>
-			<TodoItem todo={todo} />
+			<TodoItem todo={todo} hideDate={hideDate} />
 		</div>
 	);
 };

@@ -13,13 +13,15 @@ import './TodoItem.scss';
 type TodoItemProps = {
 	todo: Todo
 	pickedUp?: boolean
+	hideDate?: boolean
 }
 
-function TodoItem({ todo , pickedUp=false }: TodoItemProps){
+function TodoItem({ todo , pickedUp=false , hideDate=false }: TodoItemProps){
 	
 	let cn = "todo-item";
 	if( todo.done ) cn += " done";
 	if( pickedUp ) cn += " picked-up";
+	if( hideDate ) cn += " hide-date";
 	
 	const { doneChanged , titleChanged , dateChanged , deleteClicked , sortOrder } = useTodos();
 
@@ -27,7 +29,7 @@ function TodoItem({ todo , pickedUp=false }: TodoItemProps){
 	
 	return(
 		
-		<div className={cn}>
+		<div className={cn} style={{position:"relative"}}>
 			
 			<DoneCheckbox
 				checked = {todo.done}
@@ -39,18 +41,22 @@ function TodoItem({ todo , pickedUp=false }: TodoItemProps){
 				onTitleChange={ (newTitle) => titleChanged( todo.id , newTitle ) }
 			/>
 			
-			<p>{sortIndex}</p>
+			{ !hideDate &&
+				<LocalizationProvider dateAdapter={AdapterDayjs}>
+					<ButtonDatePicker
+						label={ todo.doDate }
+						value={ stringToDatejs(todo.doDate) }
+						onChange={(dayjs) => dateChanged( todo.id , datejsToString(dayjs) )}
+					/>
+				</LocalizationProvider>
+			}
 			
-			<LocalizationProvider dateAdapter={AdapterDayjs}>
-				<ButtonDatePicker
-					label={ todo.doDate }
-					value={ stringToDatejs(todo.doDate) }
-					onChange={(dayjs) => dateChanged( todo.id , datejsToString(dayjs) )}
-				/>
-    		</LocalizationProvider>
+				
 			
 			<DeleteButton deleteClicked={() => deleteClicked(todo.id)} />
-				
+			
+			<p style={{position:"absolute", top: "2px", right: "2px"}}>{sortIndex}</p>
+			
 		</div>
 		
 	);
