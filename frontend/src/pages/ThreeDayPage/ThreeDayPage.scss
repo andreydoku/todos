@@ -5,9 +5,55 @@
     flex-direction: column;
 	//background-color: rgba(0,0,0 , 20% );
 	
-	.title{
+	.title-bar{
+		display: flex;
+		margin-bottom: var(--spacing-1);
+		align-items: center;
+		gap: 40px;
 		
+		.title{
+			margin-bottom: 0;
+		}
+		.arrows{
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			.arrow-button{
+				
+				font-size: 24px;
+				padding: 6px;
+				display: flex;
+				border-radius: 50%;
+				cursor: pointer;
+				transition: all ease-in-out 0.2s;
+				
+				background-color: transparent;
+				&:hover{
+					background-color: rgba(255, 255, 255, 0.1);
+				}
+			}
+			.day-icon{
+				font-size: 24px;
+    			padding: 6px;
+				border-radius: 50%;
+				cursor: pointer;
+				transition: all ease-in-out 0.2s;
+				
+				background-color: transparent;
+				&:hover{
+					background-color: rgba(255, 255, 255, 0.1);
+				}
+				
+				height: auto;
+				width: auto;
+				.number{
+					font-size: 10px;
+					top: 59%;
+				}
+			}
+		}
 	}
+	
 	.todo-board{
 		//height: 600px;
 		//grid-template-columns: 400px 400px 400px;

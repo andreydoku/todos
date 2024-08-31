@@ -6,11 +6,12 @@ import { useTodos } from "../../providers/TodoProvider";
 
 
 import "./TodayPage.scss";
+import { getToday } from "../../utils/utils";
 
 
 export default function TodayPage() {
 	
-	const todayDate:Dayjs = dayjs();
+	const todayDate:Dayjs = getToday();
 	const todayDateString = todayDate.format('YYYY-MM-DD');
 	
 	const title = todayDate.format('MMM D, YYYY');

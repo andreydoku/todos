@@ -5,7 +5,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import ButtonDatePicker from '../ButtonDatePicker/ButtonDatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-import { datejsToString, stringToDatejs } from '../../utils/utils';
+import { datejsToString, getToday, stringToDatejs } from '../../utils/utils';
 import { useTodos } from '../../providers/TodoProvider';
 
 import './TodoItem.scss';
@@ -74,7 +74,7 @@ export default function TodoItem({ todo , pickedUp=false , hideDate=false }: Tod
 	
 	function getDateText( date: Dayjs ): string{
 		
-		const today = dayjs();
+		const today = getToday();
 		
 		const isToday = date.isSame( today , "day" );
 		if( isToday ){

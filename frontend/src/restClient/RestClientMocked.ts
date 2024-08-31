@@ -1,11 +1,11 @@
 import dayjs, { Dayjs } from "dayjs";
 import { Todo } from "../models/Todo";
 import { TodoUpdateRequest } from "../models/TodoUpdateRequest";
-import { applyTodoUpdateRequest } from "../utils/utils";
+import { applyTodoUpdateRequest, getToday } from "../utils/utils";
 import { RestClient } from "./RestClient";
 
 
-const day1:Dayjs = dayjs();
+const day1:Dayjs = getToday();
 const day2:Dayjs = day1.add( 1 , 'day' );
 const day3:Dayjs = day1.add( 2 , 'day' );
 

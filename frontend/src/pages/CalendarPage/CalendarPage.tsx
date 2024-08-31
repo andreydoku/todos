@@ -3,11 +3,14 @@ import dayjs, { Dayjs } from "dayjs";
 import TodoBoard from "../../components/TodoBoard/TodoBoard";
 import TodoList from "../../components/TodoBoard/TodoList/TodoList";
 import { useTodos } from "../../providers/TodoProvider";
-import { getMondayOf, isToday } from "../../utils/utils";
+import { getMondayOf, getToday, isToday } from "../../utils/utils";
 import { Todo } from "../../models/Todo";
 
 import "./CalendarPage.scss";
 import useWindowDimensions from "../../utils/useWindowDimensions";
+import DayIcon from "../../NavBar/DayIcon";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useState } from "react";
 
 
 export default function CalendarPage() {
@@ -25,11 +28,11 @@ export default function CalendarPage() {
 		)
 	}
 	
-	
-	
-	const today:Dayjs = dayjs();
+	const today:Dayjs = getToday();
 	const thisMonday:Dayjs = getMondayOf( today );
-	const days = Array.from({ length: 7*3 }, (_, i) => thisMonday.add(i, "days"));
+	const [day1, setDay1] = useState<Dayjs>( thisMonday );
+	
+	const days = Array.from({ length: 7*3 }, (_, i) => day1.add(i, "days"));
 	
 	
 	const { dateChanged , addTask } = useTodos();
@@ -41,6 +44,15 @@ export default function CalendarPage() {
 		dateChanged( todo.id , newDoDate );
 	}
 	
+	function upClicked(){
+		setDay1( day1.add(-7,"day") );
+	}
+	function todayClicked(){
+		setDay1( thisMonday );
+	}
+	function downClicked(){
+		setDay1( day1.add(+7,"day") );
+	}
 	
 	const weekdays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 	
@@ -87,6 +99,13 @@ export default function CalendarPage() {
 					) }
 					
 				</div>
+				
+				<div className="arrows">
+					<div className="arrow-button" onClick={upClicked}><FaChevronUp /></div>
+					<DayIcon onClick={todayClicked}/>
+					<div className="arrow-button" onClick={downClicked}><FaChevronDown /></div>
+				
+				</div>
 
 			</TodoBoard>
 			
@@ -100,7 +119,7 @@ export default function CalendarPage() {
 			return date.format("MMM D");
 		}
 		
-		if( date.date() == thisMonday.date() ){
+		if( date.isSame( thisMonday , "day" )){
 			return date.format("MMM D");
 		}
 		

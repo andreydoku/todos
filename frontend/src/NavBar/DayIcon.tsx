@@ -1,12 +1,23 @@
 import { MdCalendarToday } from "react-icons/md";
 
 import "./DayIcon.scss";
+import { getToday } from "../utils/utils";
 
-export default function DayIcon({ number }: {number: number}){
+type DayIconProps = {
+	number?: number
+	onClick?: ()=>void;
+}
+export default function DayIcon({ number , onClick=()=>{} }: DayIconProps){
+	
+	if( !number ){
+		const today = getToday();
+		const todayDayNumber = today.get("date");
+		number = todayDayNumber;
+	}
 	
 	return(
 		
-		<div className="day-icon">
+		<div onClick={onClick} className="day-icon">
 			<MdCalendarToday />
 			<p className="number">
 				{number}

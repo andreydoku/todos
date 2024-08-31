@@ -7,7 +7,7 @@
 	.todo-board{
 		
 		display: grid;
-		grid-template-columns: 1fr 7fr;
+		grid-template-columns: 1fr 7fr auto;
 		grid-template-rows: 1fr;
 		gap: 20px;
 		
@@ -27,6 +27,46 @@
 			grid-template-columns: repeat(7,1fr);
 			grid-template-rows: 20px 1fr 1fr 1fr;
 			gap: 5px;
+		}
+		
+		.arrows{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 10px;
+			.arrow-button{
+				
+				font-size: 24px;
+				padding: 6px;
+				display: flex;
+				border-radius: 50%;
+				cursor: pointer;
+				transition: all ease-in-out 0.2s;
+				
+				background-color: transparent;
+				&:hover{
+					background-color: rgba(255, 255, 255, 0.1);
+				}
+			}
+			.day-icon{
+				font-size: 24px;
+    			padding: 6px;
+				border-radius: 50%;
+				cursor: pointer;
+				transition: all ease-in-out 0.2s;
+				
+				background-color: transparent;
+				&:hover{
+					background-color: rgba(255, 255, 255, 0.1);
+				}
+				
+				height: auto;
+				width: auto;
+				.number{
+					font-size: 10px;
+					top: 59%;
+				}
+			}
 		}
 		
 	}

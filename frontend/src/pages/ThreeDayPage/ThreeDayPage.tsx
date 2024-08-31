@@ -1,14 +1,15 @@
 import dayjs, { Dayjs } from "dayjs";
 
-
-
 import "./ThreeDayPage.scss";
 import TodoBoard from "../../components/TodoBoard/TodoBoard";
 import TodoList from "../../components/TodoBoard/TodoList/TodoList";
 import { useTodos } from "../../providers/TodoProvider";
-import { getDayOfWeek } from "../../utils/utils";
 import { Todo } from "../../models/Todo";
-import { TransitionGroup } from "react-transition-group";
+import { useState } from "react";
+import { getToday } from "../../utils/utils";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import DayIcon from "../../NavBar/DayIcon";
+
 
 
 
@@ -19,8 +20,11 @@ export default function ThreeDayPage() {
 	
 	const title = "3-Day View";
 	
-	const day1:Dayjs = dayjs();
-	const days:Dayjs[] = Array.from({ length: 9 }, (_, i) => day1.add(i, "days"));
+	const today = getToday();
+	
+	
+	const [day1, setDay1] = useState<Dayjs>( today );
+	const days:Dayjs[] = Array.from({ length: 3 }, (_, i) => day1.add(i, "days"));
 	
 	
 	const { dateChanged , addTask } = useTodos();
@@ -32,9 +36,30 @@ export default function ThreeDayPage() {
 		dateChanged( todo.id , newDoDate );
 	}
 	
+	function leftClicked(){
+		setDay1( day1.add(-1,"day") );
+	}
+	function todayClicked(){
+		setDay1( today );
+	}
+	function rightClicked(){
+		setDay1( day1.add(1,"day") );
+	}
+	
+	
+	
 	return (
 		<div className="three-day-page">
-			<h1 className="title">{title}</h1>
+			
+			<div className="title-bar">
+				<h1 className="title">{title}</h1>
+				<div className="arrows">
+					<div className="arrow-button" onClick={leftClicked}><FaChevronLeft /></div>
+					<DayIcon onClick={todayClicked}/>
+					<div className="arrow-button" onClick={rightClicked}><FaChevronRight /></div>
+				</div>
+			</div>
+			
 			
 			<TodoBoard>
 				
@@ -62,10 +87,10 @@ export default function ThreeDayPage() {
 	
 	function getDayLabel( date:Dayjs ){
 		
-		const today = dayjs();
+		const today = getToday();
 		
-		
-		const daysDiff = date.diff(today, 'day');
+		const daysDiff = date.diff(today, 'day', true);
+		//const daysDiff = Math.round( date.diff(today, 'day', true) );
 		
 		if( daysDiff == -1 )  return "Yesterday";
 		if( daysDiff ==  0 )  return "Today";

@@ -1,6 +1,6 @@
 
 import dayjs, { Dayjs } from "dayjs";
-import { getMondayOf, isDayWithinRange, stringToDatejs } from "../utils/utils";
+import { getMondayOf, getToday, isDayWithinRange, stringToDatejs } from "../utils/utils";
 
 import { BiColumns } from "react-icons/bi";
 import { MdCalendarMonth } from "react-icons/md";
@@ -36,7 +36,7 @@ export default function NavBar() {
 	
 	
 	
-	const todayDate:Dayjs = dayjs();
+	const todayDate:Dayjs = getToday();
 	const dayNumber = todayDate.get("date");
 	
 	const { todos } = useTodos();

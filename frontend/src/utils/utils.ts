@@ -15,6 +15,10 @@ export function stringToDatejs( str: string|null|undefined ){
 	return dayjs( str );
 }
 
+export function getToday(): Dayjs{
+	return dayjs().startOf("day");
+}
+
 export function getMondayOf( date:Dayjs ){
 		
 	const dayOfWeek:number = date.day();//Sun=0, Mon=1, etc
@@ -40,7 +44,7 @@ export function isSameDate( date1:Dayjs , date2:Dayjs ): boolean {
 	return date1.format('YYYYMMDD') === date2.format('YYYYMMDD');
 }
 export function isToday( date1:Dayjs ){
-	const today = dayjs();
+	const today = getToday();
 	return isSameDate( date1 , today );
 }
 export function isSameDayOrAfter( date1:Dayjs , date2:Dayjs ): boolean {
