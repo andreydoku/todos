@@ -9,14 +9,14 @@ import { datejsToString, stringToDatejs } from '../../utils/utils';
 import { useTodos } from '../../providers/TodoProvider';
 
 import './TodoItem.scss';
+import dayjs, { Dayjs } from 'dayjs';
 
 type TodoItemProps = {
 	todo: Todo
 	pickedUp?: boolean
 	hideDate?: boolean
 }
-
-function TodoItem({ todo , pickedUp=false , hideDate=false }: TodoItemProps){
+export default function TodoItem({ todo , pickedUp=false , hideDate=false }: TodoItemProps){
 	
 	let cn = "todo-item";
 	if( todo.done ) cn += " done";
@@ -26,6 +26,17 @@ function TodoItem({ todo , pickedUp=false , hideDate=false }: TodoItemProps){
 	const { doneChanged , titleChanged , dateChanged , deleteClicked , sortOrder } = useTodos();
 
 	const sortIndex = sortOrder.findIndex( id => todo.id == id );
+	
+	
+	let dateText = null;
+	let date = null;
+	if( todo.doDate ){
+		date = stringToDatejs( todo.doDate );
+	}
+	if( date ){
+		dateText = getDateText( date );
+	}
+	
 	
 	return(
 		
@@ -44,7 +55,7 @@ function TodoItem({ todo , pickedUp=false , hideDate=false }: TodoItemProps){
 			{ !hideDate &&
 				<LocalizationProvider dateAdapter={AdapterDayjs}>
 					<ButtonDatePicker
-						label={ todo.doDate }
+						label={ dateText }
 						value={ stringToDatejs(todo.doDate) }
 						onChange={(dayjs) => dateChanged( todo.id , datejsToString(dayjs) )}
 					/>
@@ -61,8 +72,34 @@ function TodoItem({ todo , pickedUp=false , hideDate=false }: TodoItemProps){
 		
 	);
 	
+	function getDateText( date: Dayjs ): string{
+		
+		const today = dayjs();
+		
+		const isToday = date.isSame( today , "day" );
+		if( isToday ){
+			return "Today";
+		}
+		
+		const tomorrow = today.add( 1 , "day" );
+		const isTomorrow = date.isSame( tomorrow , "day" );
+		if( isTomorrow ){
+			return "Tomorrow";
+		}
+		
+		let format = "MMM D YYYY";
+		
+		const sameYear = today.year() == date.year() ;
+		if( sameYear ){
+			format = "MMM D";
+		}
+		
+		
+		return date.format(format);
+		
+	}
+	
 }
-export default TodoItem;
 
 type DoneCheckboxProps = { 
 	checked: boolean,
