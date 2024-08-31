@@ -8,6 +8,7 @@ import TodoList from "../../components/TodoBoard/TodoList/TodoList";
 import { useTodos } from "../../providers/TodoProvider";
 import { getDayOfWeek } from "../../utils/utils";
 import { Todo } from "../../models/Todo";
+import { TransitionGroup } from "react-transition-group";
 
 
 
@@ -18,21 +19,16 @@ export default function ThreeDayPage() {
 	
 	const title = "3-Day View";
 	
-	
 	const day1:Dayjs = dayjs();
-	const day2:Dayjs = day1.add( 1 , 'day' );
-	const day3:Dayjs = day1.add( 2 , 'day' );
+	const days:Dayjs[] = Array.from({ length: 9 }, (_, i) => day1.add(i, "days"));
 	
-	const dayString1:string = day1.format('YYYY-MM-DD');
-	const dayString2:string = day2.format('YYYY-MM-DD');
-	const dayString3:string = day3.format('YYYY-MM-DD');
 	
 	const { dateChanged , addTask } = useTodos();
-	function droppedTodoOnList( todo:Todo , listId:string ){
+	function droppedTodoOnList( todo:Todo , dateString:string ){
 		
-		console.log(`dropped '${todo.title}' onto '${listId}'.`)
+		console.log(`dropped '${todo.title}' onto '${dateString}'.`)
 		
-		const newDoDate = listId;
+		const newDoDate = dateString;
 		dateChanged( todo.id , newDoDate );
 	}
 	
@@ -42,36 +38,52 @@ export default function ThreeDayPage() {
 			
 			<TodoBoard>
 				
-				<TodoList
-					id={ "TodoList-" + dayString1 }
-					title="Today"
-					filter={ todo => todo.doDate == dayString1 }
-					droppedOn={ todo => droppedTodoOnList(todo,dayString1) }
-					addTaskClicked={ () => addTask( "new task" , dayString1 )}
-					hideDate
-				/>
-				<TodoList
-					id={ "TodoList-" + dayString2 }
-					title="Tomorrow"
-					filter={ todo => todo.doDate == dayString2 }
-					droppedOn={ todo => droppedTodoOnList(todo,dayString2) }
-					addTaskClicked={ () => addTask( "new task" , dayString2 )}
-					hideDate
-				/>
-				<TodoList
-					id={ "TodoList-" + dayString3 }
-					title={getDayOfWeek(day3)}
-					filter={ todo => todo.doDate == dayString3 }
-					droppedOn={ todo => droppedTodoOnList(todo,dayString3) }
-					addTaskClicked={ () => addTask( "new task" , dayString3 )}
-					hideDate
-				/>
-				
+				{ days.map( (day:Dayjs) => {
+						
+					const dayString = day.format('YYYY-MM-DD');
+					
+					return( 
+						<TodoList key={dayString}
+							id={ "TodoList-" + dayString }
+							title={ getDayLabel(day) }
+							filter={ todo => todo.doDate == dayString }
+							droppedOn={ todo => droppedTodoOnList(todo,dayString) }
+							addTaskClicked={ () => addTask( "new task" , dayString )}
+							hideDate
+						/>
+					);
+						
+				}) }
 				
 			</TodoBoard>
 			
 		</div>
 	)
+	
+	function getDayLabel( date:Dayjs ){
+		
+		const today = dayjs();
+		
+		
+		const daysDiff = date.diff(today, 'day');
+		
+		if( daysDiff == -1 )  return "Yesterday";
+		if( daysDiff ==  0 )  return "Today";
+		if( daysDiff ==  1 )  return "Tomorrow";
+		
+		const isSameWeek = date.isSame( today , "week");
+		if( isSameWeek ){
+			return date.format("dddd");
+		}
+		
+		const currentYear = date.isSame( today , "year" );
+		if( currentYear ){
+			return date.format("MMM D");
+		}
+		
+		return date.format("MMM D YYYY");
+		
+	}
 }
 
 
