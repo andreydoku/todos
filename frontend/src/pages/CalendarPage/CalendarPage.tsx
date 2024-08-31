@@ -15,7 +15,7 @@ export default function CalendarPage() {
 	
 	const title = "Calendar";
 	
-	const { height, width } = useWindowDimensions();
+	const { width } = useWindowDimensions();
 	if( width < 800 ){
 		return(
 			<div className="calendar-page">

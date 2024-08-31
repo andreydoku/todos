@@ -9,6 +9,10 @@ import { useTodos } from "../providers/TodoProvider";
 
 import { useEffect, useState } from "react";
 
+import NavBarLink from "./NavBarLink";
+import DayIcon from "./DayIcon";
+import useWindowDimensions from "../utils/useWindowDimensions";
+
 import "./NavBar.scss";
 
 export default function NavBar() {
@@ -101,10 +105,8 @@ export default function NavBar() {
 
 import { TbLayoutSidebarLeftExpand } from "react-icons/tb";
 import { TbLayoutSidebarLeftCollapse  } from "react-icons/tb";
-import NavBarLink from "./NavBarLink";
-import DayIcon from "./DayIcon";
-import useWindowDimensions from "../utils/useWindowDimensions";
-import { log } from "console";
+
+
 function ExpandButton({ expanded , setExpanded }: {expanded: boolean, setExpanded: (expanded:boolean)=>void }){
 	
 	const expandIcon = <TbLayoutSidebarLeftExpand />
