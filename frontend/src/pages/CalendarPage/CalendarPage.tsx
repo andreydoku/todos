@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 
 import TodoBoard from "../../components/TodoBoard/TodoBoard";
 import TodoList from "../../components/TodoBoard/TodoList/TodoList";

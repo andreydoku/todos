@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 
 import "./ThreeDayPage.scss";
 import TodoBoard from "../../components/TodoBoard/TodoBoard";

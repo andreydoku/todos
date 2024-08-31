@@ -9,7 +9,7 @@ import { datejsToString, getToday, stringToDatejs } from '../../utils/utils';
 import { useTodos } from '../../providers/TodoProvider';
 
 import './TodoItem.scss';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 
 type TodoItemProps = {
 	todo: Todo

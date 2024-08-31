@@ -1,5 +1,5 @@
 
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { getMondayOf, getToday, isDayWithinRange, stringToDatejs } from "../utils/utils";
 
 import { BiColumns } from "react-icons/bi";
