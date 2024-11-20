@@ -23,7 +23,7 @@ export default function CalendarPage() {
 		return(
 			<div className="calendar-page">
 				<h1 className="title">{title}</h1>
-				<p>No clue how to make this look good on mobile lol</p>
+				<p>Mobile view under construction.  Please use on desktop for full functionality.</p>
 			</div>
 		)
 	}

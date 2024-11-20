@@ -28,7 +28,9 @@ export default function App() {
 		if( env ){
 			title += ` (${env})`
 		}
-		document.title = title;
+		//document.title = title;
+		
+		document.title = "Todo App"
 	}, []);
 	
 	return (

@@ -67,9 +67,9 @@ export default function NavBar() {
 				
 			</div>
 			
-			<p style={{fontSize:"10px",textWrap:"wrap", textAlign:"center", position:"absolute", bottom: "20px", right: "20px", color: "white"}}>
+			{/* <p style={{fontSize:"10px",textWrap:"wrap", textAlign:"center", position:"absolute", bottom: "20px", right: "20px", color: "white"}}>
 				{width} × {height} 
-			</p>
+			</p> */}
 			
 		
 		</aside>

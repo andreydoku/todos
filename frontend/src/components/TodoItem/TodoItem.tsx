@@ -66,7 +66,7 @@ export default function TodoItem({ todo , pickedUp=false , hideDate=false }: Tod
 			
 			<DeleteButton deleteClicked={() => deleteClicked(todo.id)} />
 			
-			<p style={{position:"absolute", top: "2px", right: "2px"}}>{sortIndex}</p>
+			{/* <p style={{position:"absolute", top: "2px", right: "2px"}}>{sortIndex}</p> */}
 			
 		</div>
 		
