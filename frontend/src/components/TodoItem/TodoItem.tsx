@@ -26,7 +26,7 @@ export default function TodoItem({ todo , pickedUp=false , hideDate=false }: Tod
 	const { doneChanged , titleChanged , dateChanged , deleteClicked , sortOrder } = useTodos();
 
 	const sortIndex = sortOrder.findIndex( id => todo.id == id );
-	
+	console.log("sortIndex: " + sortIndex);
 	
 	let dateText = null;
 	let date = null;

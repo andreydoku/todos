@@ -23,11 +23,13 @@ export default function NavBar() {
 	const { height, width } = useWindowDimensions();
 	
 	
+	
+	
 	useEffect(() => {
 		console.log("width changed: " + width);
 		
 		if( width < 1200 && expanded ){
-			console.log("width: " + width);
+			console.log("dimensions: " + width + " x " + height);
 			
 			setExpanded(false);
 		}
